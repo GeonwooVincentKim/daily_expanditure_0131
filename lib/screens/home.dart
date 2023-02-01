@@ -133,16 +133,15 @@ class _HomePageState extends State<HomePage> {
 
       print(moneyList.length);
       
+      // Not to set as String
+      // This may cause type case error
+      // Make sure parse the String value to Integer.
       for (int i = 0; i < moneyList.length; i++) {
-        // print(moneyList[i][0].runtimeType);
+        // print(moneyList[i][0].runtimeType); // Get current value's type
         sum += int.parse(moneyList[i][0]);
       }
 
       sum = targetSum - sum;
-
-      // for (int i = 0; i < moneyList.length; i++) {
-      //   sum += int.parse(moneyList[i]);
-      // }
     });
 
     _newMoneyElementController.clear();
