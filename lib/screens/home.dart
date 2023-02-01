@@ -47,41 +47,48 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Color.fromRGBO(224, 224, 224, 1),
       floatingActionButton: MyFloatingActionButton(onPressed: createNewExpanditure),
-      body: Column(
+      body: Stack(
+        alignment: Alignment.center,
         children: [
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: moneyList.length,
-            itemBuilder: (context, index) {
-              return DailyExpanditureTile(
-                elementName: moneyList[index][0],
-                elementIncluded: moneyList[index][1],
-                settingsTapped: (context) => openExpandSettings(index),
-                deleteTapped: (context) => deleteExpand(index),
-              );
-            },
-          ),
-          Row(
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("Testing 1"),
-              ElevatedButton(
-                onPressed: () => false,
-                child: Text("Testing"),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: moneyList.length,
+                itemBuilder: (context, index) {
+                  return DailyExpanditureTile(
+                    elementName: moneyList[index][0],
+                    elementIncluded: moneyList[index][1],
+                    settingsTapped: (context) => openExpandSettings(index),
+                    deleteTapped: (context) => deleteExpand(index),
+                  );
+                },
               ),
-              ElevatedButton(
-                onPressed: () => false,
-                child: Text(
-                  // "${moneyList.forEach((element) => sum + element)}"  
-                  // '${moneyList.reduce((value, element) => value + element)}',
-                  "Testing"
-                ),
+              Row(
+                children: [
+                  Text("Testing 1"),
+                  ElevatedButton(
+                    onPressed: () => false,
+                    child: Text("Testing"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () => false,
+                    child: Text(
+                      // "${moneyList.forEach((element) => sum + element)}"  
+                      // '${moneyList.reduce((value, element) => value + element)}',
+                      "Testing"
+                    ),
+                  )
+                ],
               )
+              
             ],
-          )
-          
+          ),
         ],
       ),
     );
