@@ -141,7 +141,9 @@ class _HomePageState extends State<HomePage> {
       saveDifference(innerSum);
     });
 
-    _newMoneyElementController.clear();
+    if (hasSumValue == true) {
+      _newMoneyElementController.clear();
+    }
     Navigator.of(context).pop();
   }
 
@@ -160,12 +162,38 @@ class _HomePageState extends State<HomePage> {
     
     if (targetSum > innerSum) {
       hasSumValue = true;
-      sum = (targetSum - innerSum).abs();
-    } else if (targetSum < innerSum) {
+      sum = targetSum - innerSum;
+      // sum = (targetSum - innerSum).abs();
+
+      return hasSumValue;
+
+    } else if (targetSum < innerSum && targetSum != 0) {
+      hasSumValue = true;
+      print("Howow");
+
+      sum = targetSum - innerSum;
+      
+      return hasSumValue;
+    } else  {
       hasSumValue = false;
+
+      print("NoNo");
+      
+      CupertinoAlertDialog(
+        title: const Text("No"),
+        content: const Text("Impossible"),
+        actions: [
+          TextButton(
+            onPressed: cancelDialogBox,
+            child: const Text("Ok"),
+          )
+        ],
+        
+      );
+
+      return hasSumValue;
     }
-     
-    return hasSumValue;
+    
     // If element 
     // if (innerSum < sum) {
     // } else {
