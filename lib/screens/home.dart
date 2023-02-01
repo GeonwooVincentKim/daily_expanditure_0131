@@ -69,85 +69,59 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Testing 1"),
-                      const SizedBox(width:15),
-
-                      ElevatedButton(
-                        onPressed: () => false,
-                        child: const Text("Testing"),
-                      ),
-
-                      const SizedBox(width:35),
-                      GestureDetector(
-                        onTap: () {
-                          createNewExpanditure();
-                        },
-                        child: const CircleAvatar(
-                          radius: 20,
-                          backgroundColor: buttonColor,
-                          child: ClipOval(
-                            child: Icon(CupertinoIcons.plus, color: plusIconColor, size: 35)
-                          ),
-                        )
-                      )
-                    ],
-                  ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 60),
-                      backgroundColor: buttonColor,
-                      shadowColor: transparentColor,
-                    ).copyWith(
-                      overlayColor: MaterialStateProperty.resolveWith((states) => states.contains(MaterialState.pressed) ? null : buttonColor),
-                      elevation: const MaterialStatePropertyAll(0),
-                    ),
-                    child: const Text("Google Ads", style: TextStyle(color: buttonTextColor, fontSize: 25),),
-                    onPressed: () => false
-                  )
+                  _widgetDailyOutlays(),
+                  _widgetGoogleAds(context)
                 ],
               ),
             ),
           )
-          
-          // Column(
-          //   children: [
-          //     Row(
-          //       mainAxisAlignment: MainAxisAlignment.center,
-          //       children: [
-          //         Text("Testing 1"),
-          //         ElevatedButton(
-          //           onPressed: () => false,
-          //           child: Text("Testing"),
-          //         ),
-          //         GestureDetector(
-          //           onTap: () {
-          //             createNewExpanditure();
-          //           },
-          //           child: const CircleAvatar(
-          //             radius: 20,
-          //             backgroundColor: buttonColor,
-          //             child: ClipOval(
-          //               child: Icon(CupertinoIcons.plus, color: plusIconColor, size: 35)
-          //             ),
-          //           )
-          //         )
-          //       ],
-          //     ),
-          //     Row(
-          //       mainAxisAlignment: MainAxisAlignment.center,
-          //       children: [
-          //         Text("Testing 2")
-          //       ],
-          //     )
-          //   ],
-          // )
-          
         ],
       ),
+    );
+  }
+
+  ElevatedButton _widgetGoogleAds(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        elevation: 0,
+        fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 60),
+        backgroundColor: buttonColor,
+        shadowColor: transparentColor,
+      ).copyWith(
+        overlayColor: MaterialStateProperty.resolveWith((states) => states.contains(MaterialState.pressed) ? null : buttonColor),
+        elevation: const MaterialStatePropertyAll(0),
+      ),
+      child: const Text("Google Ads", style: TextStyle(color: buttonTextColor, fontSize: 25),),
+      onPressed: () => false
+    );
+  }
+
+  Row _widgetDailyOutlays() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text("Testing 1"),
+        const SizedBox(width:15),
+
+        ElevatedButton(
+          onPressed: () => false,
+          child: const Text("Testing"),
+        ),
+
+        const SizedBox(width:35),
+        GestureDetector(
+          onTap: () {
+            createNewExpanditure();
+          },
+          child: const CircleAvatar(
+            radius: 20,
+            backgroundColor: swipeIconColor,
+            child: ClipOval(
+              child: Icon(CupertinoIcons.plus, color: plusIconColor, size: 35)
+            ),
+          )
+        )
+      ],
     );
   }
 
