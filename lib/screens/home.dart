@@ -21,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   final _newMoneyElementController = TextEditingController();
   final _newTargetAmountController = TextEditingController();
 
-  int sum = 0;
+  int sum = 0; // get the value of `targetSum - (sum = moneyList)`
 
   @override
   Widget build(BuildContext context) {
@@ -31,13 +31,16 @@ class _HomePageState extends State<HomePage> {
         children: [
           _widgetTargetAmount(targetSum),
           
+          // dummay variable to check the difference of targetSum and moneyList
+          Text('$sum', style: const TextStyle(color: CupertinoColors.black),),
+          
           Expanded(
             child: ListView.builder(
               shrinkWrap: true,
               itemCount: moneyList.length,
               itemBuilder: (context, index) {
                 return DailyExpanditureTile(
-                  elementName: moneyList[index][0],
+                  elementName: int.parse(moneyList[index][0]),
                   elementIncluded: moneyList[index][1],
                   // settingsTapped: (context) => openExpandSettings(index),
                   deleteTapped: (context) => deleteExpand(index),
@@ -126,6 +129,20 @@ class _HomePageState extends State<HomePage> {
   void saveNewExpand() {
     setState(() {
       moneyList.add([_newMoneyElementController.text, false]);
+      // print(moneyList.runtimeType);
+
+      print(moneyList.length);
+      
+      for (int i = 0; i < moneyList.length; i++) {
+        // print(moneyList[i][0].runtimeType);
+        sum += int.parse(moneyList[i][0]);
+      }
+
+      sum = targetSum - sum;
+
+      // for (int i = 0; i < moneyList.length; i++) {
+      //   sum += int.parse(moneyList[i]);
+      // }
     });
 
     _newMoneyElementController.clear();
@@ -140,6 +157,15 @@ class _HomePageState extends State<HomePage> {
 
     _newTargetAmountController.clear();
     Navigator.of(context).pop();
+  }
+
+  // Save the difference of TargetSum and moneyList
+  void saveDifference() {
+    setState(() {
+      for (int i = 0; i < moneyList.length; i++) {
+        sum += int.parse(moneyList[i]);
+      }
+    });
   }
 
   // Delete from the list (Delete)
