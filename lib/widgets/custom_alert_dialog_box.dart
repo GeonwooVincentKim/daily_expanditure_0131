@@ -1,4 +1,5 @@
 // import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomAlertDialogBox extends StatelessWidget {
@@ -17,17 +18,19 @@ class CustomAlertDialogBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      backgroundColor: Colors.grey[900],
-      content: TextField(
+    return CupertinoAlertDialog(
+      // backgroundColor: Colors.grey[900],
+      content: CupertinoTextField(
+        autofocus: true,
         controller: controller,
-        style: const TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: TextStyle(color: Colors.grey[600]),
-          enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-          focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white))
-        ),
+        style: const TextStyle(color: CupertinoColors.black),
+        // decoration: InputDecoration(
+        //   hintText: hintText,
+        //   hintStyle: TextStyle(color: Colors.grey[600]),
+        //   enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
+        //   focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white))
+        // ),
+        placeholder: hintText,
         onSubmitted: (_) => submit(context),
       ),
       actions: [
@@ -39,6 +42,10 @@ class CustomAlertDialogBox extends StatelessWidget {
         //     style: TextStyle(color: CupertinoColors.white),
         //   ),
         // ),
+        TextButton(
+          onPressed: onSave,
+          child: const Text("저장")
+        )
         // CupertinoButton(
         //   onPressed: onSave,
         //   color: CupertinoColors.black,
@@ -47,22 +54,22 @@ class CustomAlertDialogBox extends StatelessWidget {
         //     style: TextStyle(color: CupertinoColors.white),
         //   ),
         // ),
-        MaterialButton(
-          onPressed: onSave,
-          color: Colors.black,
-          child: const Text(
-            "Save",
-            style: TextStyle(color: Colors.white)
-          ),
-        ),
-        MaterialButton(
-          onPressed: onCancel,
-          color: Colors.black,
-          child: const Text(
-            "Cancel",
-            style: TextStyle(color: Colors.white)
-          ),
-        )
+        // MaterialButton(
+        //   onPressed: onSave,
+        //   color: Colors.black,
+        //   child: const Text(
+        //     "Save",
+        //     style: TextStyle(color: Colors.white)
+        //   ),
+        // ),
+        // MaterialButton(
+        //   onPressed: onCancel,
+        //   color: Colors.black,
+        //   child: const Text(
+        //     "Cancel",
+        //     style: TextStyle(color: Colors.white)
+        //   ),
+        // )
       ],
     );
   }

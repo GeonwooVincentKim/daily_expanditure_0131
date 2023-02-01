@@ -1,3 +1,4 @@
+import 'package:daily_expanditure_0131/shared/style.dart';
 import 'package:daily_expanditure_0131/widgets/custom_alert_dialog_box.dart';
 import 'package:daily_expanditure_0131/widgets/daily_expanditure_tile.dart';
 import 'package:daily_expanditure_0131/widgets/my_floating_action_button.dart';
@@ -19,18 +20,7 @@ class _HomePageState extends State<HomePage> {
   int sum = 0;
 
   void createNewExpanditure() {
-    // showCupertinoDialog(
-    //   context: context,
-    //   builder: (BuildContext context) {
-    //     return CustomAlertDialogBox(
-    //       controller: _newMoneyElementController,
-    //       hintText: "입력하세요",
-    //       onSave: saveNewExpand,
-    //       onCancel: cancelDialogBox,
-    //     );
-    //   }
-    // );
-    showDialog(
+    showCupertinoDialog(
       context: context,
       builder: (BuildContext context) {
         return CustomAlertDialogBox(
@@ -41,15 +31,24 @@ class _HomePageState extends State<HomePage> {
         );
       }
     );
+    // showDialog(
+    //   context: context,
+    //   builder: (BuildContext context) {
+    //     return CustomAlertDialogBox(
+    //       controller: _newMoneyElementController,
+    //       hintText: "입력하세요",
+    //       onSave: saveNewExpand,
+    //       onCancel: cancelDialogBox,
+    //     );
+    //   }
+    // );
   }
 
   @override
   Widget build(BuildContext context) {
-
-    return Scaffold(
+    return CupertinoPageScaffold(
       backgroundColor: Colors.grey[300],
-      floatingActionButton: MyFloatingActionButton(onPressed: createNewExpanditure),
-      body: Column(
+      child: Column(
         children: [
           ListView.builder(
             shrinkWrap: true,
@@ -64,23 +63,88 @@ class _HomePageState extends State<HomePage> {
               );
             },
           ),
-          Row(
-            children: [
-              Text("Testing 1"),
-              ElevatedButton(
-                onPressed: () => false,
-                child: Text("Testing"),
+          Expanded(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Testing 1"),
+                      const SizedBox(width:15),
+
+                      ElevatedButton(
+                        onPressed: () => false,
+                        child: const Text("Testing"),
+                      ),
+
+                      const SizedBox(width:35),
+                      GestureDetector(
+                        onTap: () {
+                          createNewExpanditure();
+                        },
+                        child: const CircleAvatar(
+                          radius: 20,
+                          backgroundColor: buttonColor,
+                          child: ClipOval(
+                            child: Icon(CupertinoIcons.plus, color: plusIconColor, size: 35)
+                          ),
+                        )
+                      )
+                    ],
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      elevation: 0,
+                      fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 60),
+                      backgroundColor: buttonColor,
+                      shadowColor: transparentColor,
+                    ).copyWith(
+                      overlayColor: MaterialStateProperty.resolveWith((states) => states.contains(MaterialState.pressed) ? null : buttonColor),
+                      elevation: const MaterialStatePropertyAll(0),
+                    ),
+                    child: const Text("Google Ads", style: TextStyle(color: buttonTextColor, fontSize: 25),),
+                    onPressed: () => false
+                  )
+                ],
               ),
-              ElevatedButton(
-                onPressed: () => false,
-                child: Text(
-                  // "${moneyList.forEach((element) => sum + element)}"  
-                  // '${moneyList.reduce((value, element) => value + element)}',
-                  "Testing"
-                ),
-              )
-            ],
+            ),
           )
+          
+          // Column(
+          //   children: [
+          //     Row(
+          //       mainAxisAlignment: MainAxisAlignment.center,
+          //       children: [
+          //         Text("Testing 1"),
+          //         ElevatedButton(
+          //           onPressed: () => false,
+          //           child: Text("Testing"),
+          //         ),
+          //         GestureDetector(
+          //           onTap: () {
+          //             createNewExpanditure();
+          //           },
+          //           child: const CircleAvatar(
+          //             radius: 20,
+          //             backgroundColor: buttonColor,
+          //             child: ClipOval(
+          //               child: Icon(CupertinoIcons.plus, color: plusIconColor, size: 35)
+          //             ),
+          //           )
+          //         )
+          //       ],
+          //     ),
+          //     Row(
+          //       mainAxisAlignment: MainAxisAlignment.center,
+          //       children: [
+          //         Text("Testing 2")
+          //       ],
+          //     )
+          //   ],
+          // )
           
         ],
       ),

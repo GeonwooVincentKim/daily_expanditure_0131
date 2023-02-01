@@ -11,15 +11,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return CupertinoApp(
-    //   debugShowCheckedModeBanner: false,
-    //   theme: CupertinoThemeData(brightness: Brightness.light),
-    //   home: HomePage(),
-    // );
-    return MaterialApp(
+    return CupertinoApp(
       debugShowCheckedModeBanner: false,
+      theme: CupertinoThemeData(brightness: Brightness.light),
       home: HomePage(),
-      theme: ThemeData(primarySwatch: Colors.green),
     );
+    // return MaterialApp(
+    //   debugShowCheckedModeBanner: false,
+    //   home: HomePage(),
+    //   theme: ThemeData(primarySwatch: Colors.green),
+    // );
   }
 }
