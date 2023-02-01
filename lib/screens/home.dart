@@ -1,3 +1,4 @@
+import 'package:daily_expanditure_0131/shared/style.dart';
 import 'package:daily_expanditure_0131/widgets/custom_alert_dialog_box.dart';
 import 'package:daily_expanditure_0131/widgets/daily_expanditure_tile.dart';
 import 'package:daily_expanditure_0131/widgets/my_floating_action_button.dart';
@@ -48,7 +49,7 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       backgroundColor: Color.fromRGBO(224, 224, 224, 1),
-      floatingActionButton: MyFloatingActionButton(onPressed: createNewExpanditure),
+      // floatingActionButton: MyFloatingActionButton(onPressed: createNewExpanditure),
       body: Stack(
         alignment: Alignment.center,
         children: [
@@ -70,19 +71,24 @@ class _HomePageState extends State<HomePage> {
                 },
               ),
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text("Testing 1"),
                   ElevatedButton(
                     onPressed: () => false,
                     child: Text("Testing"),
                   ),
-                  ElevatedButton(
-                    onPressed: () => false,
-                    child: Text(
-                      // "${moneyList.forEach((element) => sum + element)}"  
-                      // '${moneyList.reduce((value, element) => value + element)}',
-                      "Testing"
-                    ),
+                  GestureDetector(
+                    onTap: () {
+                      createNewExpanditure();
+                    },
+                    child: const CircleAvatar(
+                      radius: 20,
+                      backgroundColor: buttonColor,
+                      child: ClipOval(
+                        child: Icon(CupertinoIcons.plus, color: plusIconColor, size: 35)
+                      ),
+                    )
                   )
                 ],
               )
