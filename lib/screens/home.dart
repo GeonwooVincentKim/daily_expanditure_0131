@@ -17,6 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List moneyList = []; // list of money that user spend for a day
   int targetSum = 0; // target sum of money that user planned to use for a day
+  bool hasSumValue = false; // Check sum value input first
 
   final _newMoneyElementController = TextEditingController();
   final _newTargetAmountController = TextEditingController();
@@ -29,7 +30,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.grey[300],
       child: Column(
         children: [
-          _widgetTargetAmount(targetSum),
+          _widgetTargetAmount(targetSum, hasSumValue),
           
           // dummay variable to check the difference of targetSum and moneyList
           Text('$sum', style: const TextStyle(color: CupertinoColors.black),),
@@ -66,7 +67,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // TargetAmount
-  CustomRow _widgetTargetAmount(int targetSum) {
+  CustomRow _widgetTargetAmount(int targetSum, bool hasSumValue) {
     return CustomRow(
       children: [
         const SizedBox(width: 50),
@@ -118,6 +119,7 @@ class _HomePageState extends State<HomePage> {
         return CustomAlertDialogBox(
           controller: textController,
           hintText: "입력하세요",
+          hasSumValue: false,
           onSave: onSave,
           onCancel: onCancel,
         );
@@ -127,25 +129,48 @@ class _HomePageState extends State<HomePage> {
 
   // List of expanditure of today (Create - List)
   void saveNewExpand() {
+    int innerSum = 0; // Calculate the sum of all elements of List (Expanditure)
+
     setState(() {
       moneyList.add([_newMoneyElementController.text, false]);
       // print(moneyList.runtimeType);
 
-      print(moneyList.length);
+      print("length -> ${moneyList.length}");
       
-      // Not to set as String
-      // This may cause type case error
-      // Make sure parse the String value to Integer.
-      for (int i = 0; i < moneyList.length; i++) {
-        // print(moneyList[i][0].runtimeType); // Get current value's type
-        sum += int.parse(moneyList[i][0]);
-      }
-
-      sum = targetSum - sum;
+      // Calculate the sum
+      saveDifference(innerSum);
     });
 
     _newMoneyElementController.clear();
     Navigator.of(context).pop();
+  }
+
+  // Save the difference of TargetSum and moneyList
+  bool saveDifference(int innerSum) {
+    // Not to set as String
+    // This may cause type case error
+    // Make sure parse the String value to Integer.
+    for (int i = 0; i < moneyList.length; i++) {
+      // print(moneyList[i][0].runtimeType); // Get current value's type
+      print("Values -> ${int.parse(moneyList[i][0])}");
+      print("Plus -> ${int.parse(moneyList[i][0]) + int.parse(moneyList[i][0])}");
+    
+      innerSum += int.parse(moneyList[i][0]); // Store into the innerSum
+    }
+    
+    if (targetSum > innerSum) {
+      hasSumValue = true;
+      sum = (targetSum - innerSum).abs();
+    } else if (targetSum < innerSum) {
+      hasSumValue = false;
+    }
+     
+    return hasSumValue;
+    // If element 
+    // if (innerSum < sum) {
+    // } else {
+    //   sum = (innerSum - targetSum).abs();
+    // }
   }
 
   // Save the target amount of today (Create - Object)
@@ -159,13 +184,17 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Save the difference of TargetSum and moneyList
-  void saveDifference() {
-    setState(() {
-      for (int i = 0; i < moneyList.length; i++) {
-        sum += int.parse(moneyList[i]);
-      }
-    });
-  }
+  // void saveDifference() {
+  //   setState(() {
+  //     // Make sure parse the String value to Integer.
+  //     for (int i = 0; i < moneyList.length; i++) {
+  //       // print(moneyList[i][0].runtimeType); // Get current value's type
+  //       sum += int.parse(moneyList[i][0]);
+  //     }
+
+  //     sum = targetSum - sum;
+  //   });
+  // }
 
   // Delete from the list (Delete)
   void deleteExpand(int index) {

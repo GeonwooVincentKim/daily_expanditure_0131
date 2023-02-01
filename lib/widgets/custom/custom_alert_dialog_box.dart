@@ -5,6 +5,7 @@ class CustomAlertDialogBox extends StatelessWidget {
   // ignore: prefer_typing_uninitialized_variables
   final controller;
   final String hintText;
+  final bool hasSumValue;
   final VoidCallback onSave;
   final VoidCallback onCancel;
 
@@ -12,8 +13,9 @@ class CustomAlertDialogBox extends StatelessWidget {
     super.key, 
     required this.controller, 
     required this.hintText, 
+    required this.hasSumValue,
     required this.onSave, 
-    required this.onCancel
+    required this.onCancel,
   });
 
   @override
@@ -28,6 +30,20 @@ class CustomAlertDialogBox extends StatelessWidget {
         onSubmitted: (_) => submit(context),
       ),
       actions: [
+        // hasSumValue ? (
+        //   TextButton(
+        //     onPressed: onSave,
+        //     child: const Text("저장")
+        //   )
+        // ) : CupertinoAlertDialog(
+        //   content: const Text("총 합계를 먼저 입력해주세요"),
+        //   actions: [
+        //     TextButton(
+        //       onPressed: onCancel,
+        //       child: const Text("확인"),
+        //     )
+        //   ],
+        // ),
         TextButton(
           onPressed: onSave,
           child: const Text("저장")
