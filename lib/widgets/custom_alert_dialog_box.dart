@@ -54,22 +54,6 @@ class CustomAlertDialogBox extends StatelessWidget {
         //     style: TextStyle(color: CupertinoColors.white),
         //   ),
         // ),
-        // MaterialButton(
-        //   onPressed: onSave,
-        //   color: Colors.black,
-        //   child: const Text(
-        //     "Save",
-        //     style: TextStyle(color: Colors.white)
-        //   ),
-        // ),
-        // MaterialButton(
-        //   onPressed: onCancel,
-        //   color: Colors.black,
-        //   child: const Text(
-        //     "Cancel",
-        //     style: TextStyle(color: Colors.white)
-        //   ),
-        // )
       ],
     );
   }
