@@ -29,6 +29,10 @@ class CustomAlertDialogBox extends StatelessWidget {
         TextButton(
           onPressed: onSave,
           child: const Text("저장")
+        ),
+        TextButton(
+          onPressed: onCancel,
+          child: const Text("취소"),
         )
       ],
     );
