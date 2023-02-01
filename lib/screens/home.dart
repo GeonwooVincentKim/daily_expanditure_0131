@@ -15,14 +15,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List moneyList = [];
-  int targetSum = 0;
+  List moneyList = []; // list of money that user spend for a day
+  int targetSum = 0; // target sum of money that user planned to use for a day
 
   final _newMoneyElementController = TextEditingController();
   final _newTargetAmountController = TextEditingController();
 
   int sum = 0;
-
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +62,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // TargetAmount
   CustomRow _widgetTargetAmount(int targetSum) {
     return CustomRow(
       children: [
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(width:35),
         GestureDetector(
           onTap: () {
-            createNewExpanditure(_newTargetAmountController, saveTargetExpandSum, cancelDialogBox);
+            createNewExpanditure(_newTargetAmountController, saveTargetAmount, cancelDialogBox);
           },
           child: const CustomCircleAvatar(backgroundColor: transparentColor, icon: CupertinoIcons.creditcard, iconColor: buttonTextColor, size: 35),
         )
@@ -84,6 +84,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // List of Expanditure
   CustomRow _widgetDailyOutlays() {
     return CustomRow(
       children: [
@@ -106,6 +107,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  // Input the new element of the list (expanditure)
   void createNewExpanditure(TextEditingController textController, onSave, onCancel) {
     showCupertinoDialog(
       context: context,
@@ -120,35 +122,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // void createNewTargetExpand() {
-  //   showCupertinoDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return CustomerAlertDialogBox(
-  //         controller: _newTargetAmountController,
-  //         hintText: "입력하세요",
-  //         onSave: () => save
-  //       );
-  //     },
-  //   );
-  // }
-
-  // Open the Dialog of List of expanditure that has Data
-  // void openExpandSettings(int index) {
-  //   showCupertinoDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return CustomAlertDialogBox(
-  //         controller: _newMoneyElementController,
-  //         hintText: moneyList[index][0],
-  //         onSave: () => saveExistingExpand(index),
-  //         onCancel: cancelDialogBox,
-  //       );
-  //     }
-  //   );
-  // }
-
-  // List of expanditure of today (Create)
+  // List of expanditure of today (Create - List)
   void saveNewExpand() {
     setState(() {
       moneyList.add([_newMoneyElementController.text, false]);
@@ -158,7 +132,8 @@ class _HomePageState extends State<HomePage> {
     Navigator.of(context).pop();
   }
 
-  void saveTargetExpandSum() {
+  // Save the target amount of today (Create - Object)
+  void saveTargetAmount() {
     setState(() {
       targetSum = int.parse(_newTargetAmountController.text);
     });
@@ -166,16 +141,6 @@ class _HomePageState extends State<HomePage> {
     _newTargetAmountController.clear();
     Navigator.of(context).pop();
   }
-
-  // List of expanditure of today (Update)
-  // void saveExistingExpand(int index) {
-  //   setState(() {
-  //     moneyList[index][0] = _newMoneyElementController.text;
-      
-  //     _newMoneyElementController.clear();
-  //     Navigator.of(context).pop();
-  //   });
-  // }
 
   // Delete from the list (Delete)
   void deleteExpand(int index) {
