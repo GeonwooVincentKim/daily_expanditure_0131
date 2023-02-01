@@ -64,14 +64,24 @@ class _HomePageState extends State<HomePage> {
               );
             },
           ),
-          ElevatedButton(
-            onPressed: () => false,
-            child: Text(
-              // "${moneyList.forEach((element) => sum + element)}"  
-              // '${moneyList.reduce((value, element) => value + element)}',
-              "Testing"
-            ),
+          Row(
+            children: [
+              Text("Testing 1"),
+              ElevatedButton(
+                onPressed: () => false,
+                child: Text("Testing"),
+              ),
+              ElevatedButton(
+                onPressed: () => false,
+                child: Text(
+                  // "${moneyList.forEach((element) => sum + element)}"  
+                  // '${moneyList.reduce((value, element) => value + element)}',
+                  "Testing"
+                ),
+              )
+            ],
           )
+          
         ],
       ),
     );
