@@ -19,41 +19,18 @@ class CustomAlertDialogBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
-      // backgroundColor: Colors.grey[900],
       content: CupertinoTextField(
         autofocus: true,
         controller: controller,
         style: const TextStyle(color: CupertinoColors.black),
-        // decoration: InputDecoration(
-        //   hintText: hintText,
-        //   hintStyle: TextStyle(color: Colors.grey[600]),
-        //   enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white)),
-        //   focusedBorder: const OutlineInputBorder(borderSide: BorderSide(color: Colors.white))
-        // ),
         placeholder: hintText,
         onSubmitted: (_) => submit(context),
       ),
       actions: [
-        // CupertinoButton(
-        //   onPressed: onSave,
-        //   color: CupertinoColors.black,
-        //   child: const Text(
-        //     "Save",
-        //     style: TextStyle(color: CupertinoColors.white),
-        //   ),
-        // ),
         TextButton(
           onPressed: onSave,
           child: const Text("저장")
         )
-        // CupertinoButton(
-        //   onPressed: onSave,
-        //   color: CupertinoColors.black,
-        //   child: const Text(
-        //     "Cancel",
-        //     style: TextStyle(color: CupertinoColors.white),
-        //   ),
-        // ),
       ],
     );
   }
