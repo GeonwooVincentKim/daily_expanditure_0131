@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomAlertDialogBox extends StatelessWidget {
+  // ignore: prefer_typing_uninitialized_variables
   final controller;
   final String hintText;
   final VoidCallback onSave;
@@ -20,6 +21,7 @@ class CustomAlertDialogBox extends StatelessWidget {
     return CupertinoAlertDialog(
       content: CupertinoTextField(
         autofocus: true,
+        keyboardType: TextInputType.number,
         controller: controller,
         style: const TextStyle(color: CupertinoColors.black),
         placeholder: hintText,

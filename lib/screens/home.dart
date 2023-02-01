@@ -16,8 +16,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List moneyList = [];
+  int targetSum = 0;
 
   final _newMoneyElementController = TextEditingController();
+  final _newTargetAmountController = TextEditingController();
 
   int sum = 0;
 
@@ -28,7 +30,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.grey[300],
       child: Column(
         children: [
-          _widgetTargetAmount(),
+          _widgetTargetAmount(targetSum),
           
           Expanded(
             child: ListView.builder(
@@ -38,7 +40,7 @@ class _HomePageState extends State<HomePage> {
                 return DailyExpanditureTile(
                   elementName: moneyList[index][0],
                   elementIncluded: moneyList[index][1],
-                  settingsTapped: (context) => openExpandSettings(index),
+                  // settingsTapped: (context) => openExpandSettings(index),
                   deleteTapped: (context) => deleteExpand(index),
                 );
               },
@@ -52,7 +54,6 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   _widgetDailyOutlays(),
                   CustomElevatedButton(getValue: "Google Ads", customFixedSize: Size(MediaQuery.of(context).size.width * 0.9, 60))
-                  // _widgetGoogleAds(context)
                 ],
               ),
             ),
@@ -62,42 +63,25 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  CustomRow _widgetTargetAmount() {
+  CustomRow _widgetTargetAmount(int targetSum) {
     return CustomRow(
       children: [
         const SizedBox(width: 50),
 
         ElevatedButton(
           onPressed: () => false,
-          child: const Text("Testing"),
+          child: Text("$targetSum"),
         ),
 
         const SizedBox(width:35),
         GestureDetector(
           onTap: () {
-            createNewExpanditure();
+            createNewExpanditure(_newTargetAmountController, saveTargetExpandSum, cancelDialogBox);
           },
           child: const CustomCircleAvatar(backgroundColor: transparentColor, icon: CupertinoIcons.creditcard, iconColor: buttonTextColor, size: 35),
         )
       ],
     );
-  }
-
-  CustomElevatedButton _widgetGoogleAds(BuildContext context) {
-    // return ElevatedButton(
-    //   style: ElevatedButton.styleFrom(
-    //     elevation: 0,
-    //     fixedSize: Size(MediaQuery.of(context).size.width * 0.9, 60),
-    //     backgroundColor: buttonColor,
-    //     shadowColor: transparentColor,
-    //   ).copyWith(
-    //     overlayColor: MaterialStateProperty.resolveWith((states) => states.contains(MaterialState.pressed) ? null : buttonColor),
-    //     elevation: const MaterialStatePropertyAll(0),
-    //   ),
-    //   child: const Text("Google Ads", style: TextStyle(color: buttonTextColor, fontSize: 25),),
-    //   onPressed: () => false
-    // );
-    return CustomElevatedButton(getValue: "Google Ads", customFixedSize: Size(MediaQuery.of(context).size.width * 0.9, 60));
   }
 
   CustomRow _widgetDailyOutlays() {
@@ -114,7 +98,7 @@ class _HomePageState extends State<HomePage> {
         const SizedBox(width: 35),
         GestureDetector(
           onTap: () {
-            createNewExpanditure();
+            createNewExpanditure(_newMoneyElementController, saveNewExpand, cancelDialogBox);
           },
           child: const CustomCircleAvatar(backgroundColor: swipeIconColor, icon: CupertinoIcons.plus, iconColor: plusIconColor, size: 35)
         )
@@ -122,34 +106,49 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void createNewExpanditure() {
+  void createNewExpanditure(TextEditingController textController, onSave, onCancel) {
     showCupertinoDialog(
       context: context,
       builder: (BuildContext context) {
         return CustomAlertDialogBox(
-          controller: _newMoneyElementController,
+          controller: textController,
           hintText: "입력하세요",
-          onSave: saveNewExpand,
-          onCancel: cancelDialogBox,
+          onSave: onSave,
+          onCancel: onCancel,
         );
       }
     );
   }
 
-  void openExpandSettings(int index) {
-    showCupertinoDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return CustomAlertDialogBox(
-          controller: _newMoneyElementController,
-          hintText: moneyList[index][0],
-          onSave: () => saveExistingExpand(index),
-          onCancel: cancelDialogBox,
-        );
-      }
-    );
-  }
+  // void createNewTargetExpand() {
+  //   showCupertinoDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return CustomerAlertDialogBox(
+  //         controller: _newTargetAmountController,
+  //         hintText: "입력하세요",
+  //         onSave: () => save
+  //       );
+  //     },
+  //   );
+  // }
 
+  // Open the Dialog of List of expanditure that has Data
+  // void openExpandSettings(int index) {
+  //   showCupertinoDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return CustomAlertDialogBox(
+  //         controller: _newMoneyElementController,
+  //         hintText: moneyList[index][0],
+  //         onSave: () => saveExistingExpand(index),
+  //         onCancel: cancelDialogBox,
+  //       );
+  //     }
+  //   );
+  // }
+
+  // List of expanditure of today (Create)
   void saveNewExpand() {
     setState(() {
       moneyList.add([_newMoneyElementController.text, false]);
@@ -159,21 +158,33 @@ class _HomePageState extends State<HomePage> {
     Navigator.of(context).pop();
   }
 
-  void saveExistingExpand(int index) {
+  void saveTargetExpandSum() {
     setState(() {
-      moneyList[index][0] = _newMoneyElementController.text;
-      
-      _newMoneyElementController.clear();
-      Navigator.of(context).pop();
+      targetSum = int.parse(_newTargetAmountController.text);
     });
+
+    _newTargetAmountController.clear();
+    Navigator.of(context).pop();
   }
 
+  // List of expanditure of today (Update)
+  // void saveExistingExpand(int index) {
+  //   setState(() {
+  //     moneyList[index][0] = _newMoneyElementController.text;
+      
+  //     _newMoneyElementController.clear();
+  //     Navigator.of(context).pop();
+  //   });
+  // }
+
+  // Delete from the list (Delete)
   void deleteExpand(int index) {
     setState(() {
       moneyList.removeAt(index);
     });
   }
 
+  // Close the Dialog Box
   void cancelDialogBox() {
     _newMoneyElementController.clear();
     Navigator.of(context).pop();
