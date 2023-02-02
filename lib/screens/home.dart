@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   final _newTargetAmountController = TextEditingController();
 
   int innerSum = 0; // Calculate the sum of all elements of List (Expanditure)
-  double sum = 0.0; // get the value of `targetSum // (sum = moneyList)`
+  double differenceSum = 0.0; // get the value of `targetSum // (sum = moneyList)`
   int dailySum = 0; // get the value of `targetSum - (sum = moneyList)`
 
   @override
@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
           _widgetTargetAmount(targetSum, true), // allows to set true input value anytime user wants
           
           // dummay variable to check the difference of targetSum and moneyList
-          Text('$sum', style: const TextStyle(color: CupertinoColors.black),),
+          Text('$differenceSum', style: const TextStyle(color: CupertinoColors.black),),
           
           Expanded(
             child: ListView.builder(
@@ -158,7 +158,7 @@ class _HomePageState extends State<HomePage> {
     for (int i = 0; i < moneyList.length; i++) {
       // print(moneyList[i][0].runtimeType); // Get current value's type
       print("Values -> ${int.parse(moneyList[i][0])}");
-      print("Plus -> ${int.parse(moneyList[i][0]) + int.parse(moneyList[i][0])}");
+      // print("Plus -> ${int.parse(moneyList[i][0]) + int.parse(moneyList[i][0])}");
     
       if (sign == '+') {
         innerSum += int.parse(moneyList[i][0]); // Store into the innerSum
@@ -167,18 +167,29 @@ class _HomePageState extends State<HomePage> {
       }
     }    
     
-    // If target money bigger than list of expanditure values, divide targetSum by targetSum
-    // Otherwise, divide targetSum by innerSum
-    if (targetSum >= innerSum) {
-      sum = double.parse((innerSum / targetSum).toStringAsFixed(2)).abs();
-      dailySum = innerSum.abs();
-    } else {
-      sum = double.parse((targetSum / innerSum).toStringAsFixed(2)).abs();
-      dailySum = innerSum.abs();
-    }
-    print('Get SUM -> $sum');
-    print('Get Daily Sum -> $dailySum');
+    // Get DailySum from innerSum
+    dailySum = innerSum.abs();
     
+    // If dailySum is less smaller than targetSum, divide innerSum by targetSum
+    // Otherwise, divide dailySum by targetSum.
+    if (dailySum <= targetSum) {
+      differenceSum = double.parse((innerSum / targetSum).abs().toStringAsFixed(2));
+    } else if (dailySum > targetSum) {
+      differenceSum = double.parse((targetSum / innerSum).abs().toStringAsFixed(2));
+    }
+
+    print('Get SUM -> $differenceSum');
+    print('Get Daily Sum -> ${innerSum.abs()}');
+    
+    if (innerSum.abs() < targetSum) {
+      print("Difference -> ${(innerSum / targetSum).abs()}");
+      print("Difference (2 digit) -> ${double.parse((innerSum / targetSum).abs().toStringAsFixed(2))}");
+    } else if (innerSum.abs() > targetSum) {
+      print("Difference -> ${(targetSum / innerSum).abs()}");
+      print("Difference (2 digit) -> ${double.parse((targetSum / innerSum).abs().toStringAsFixed(2))}");
+    }
+
+
     // If targetSum didn't input before input the value of innerSum,
     // return hasSumValue false
     // Otherwise return true
