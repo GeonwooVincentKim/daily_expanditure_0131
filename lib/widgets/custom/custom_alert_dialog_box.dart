@@ -29,21 +29,31 @@ class CustomAlertDialogBox extends StatelessWidget {
         placeholder: hintText,
         onSubmitted: (_) => submit(context),
       ),
-      actions: [
-        // hasSumValue ? (
-        //   TextButton(
-        //     onPressed: onSave,
-        //     child: const Text("저장")
-        //   )
-        // ) : CupertinoAlertDialog(
-        //   content: const Text("총 합계를 먼저 입력해주세요"),
-        //   actions: [
-        //     TextButton(
-        //       onPressed: onCancel,
-        //       child: const Text("확인"),
-        //     )
-        //   ],
-        // ),
+      // actions: [
+      //   // hasSumValue ? (
+      //   //   TextButton(
+      //   //     onPressed: onSave,
+      //   //     child: const Text("저장")
+      //   //   )
+      //   // ) : CupertinoAlertDialog(
+      //   //   content: const Text("총 합계를 먼저 입력해주세요"),
+      //   //   actions: [
+      //   //     TextButton(
+      //   //       onPressed: onCancel,
+      //   //       child: const Text("확인"),
+      //   //     )
+      //   //   ],
+      //   // ),
+      //   TextButton(
+      //     onPressed: onSave,
+      //     child: const Text("저장")
+      //   ),
+      //   TextButton(
+      //     onPressed: onCancel,
+      //     child: const Text("취소"),
+      //   )
+      // ],
+      actions: hasSumValue ? [
         TextButton(
           onPressed: onSave,
           child: const Text("저장")
@@ -52,7 +62,12 @@ class CustomAlertDialogBox extends StatelessWidget {
           onPressed: onCancel,
           child: const Text("취소"),
         )
-      ],
+      ] : [
+        TextButton(
+          onPressed: onCancel,
+          child: const Text("뒤로 가기")
+        )
+      ]
     );
   }
 
