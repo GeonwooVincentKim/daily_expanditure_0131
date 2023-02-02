@@ -24,13 +24,6 @@ class DailyExpanditureTile extends StatelessWidget {
         endActionPane: ActionPane(
           motion: StretchMotion(),
           children: [
-            // SlidableAction(
-            //   onPressed: settingsTapped,
-            //   backgroundColor: CupertinoColors.systemGrey3,
-            //   icon: CupertinoIcons.settings,
-            //   borderRadius: BorderRadius.circular(12),
-            // ),
-
             // delete option
             SlidableAction(
               onPressed: deleteTapped,
