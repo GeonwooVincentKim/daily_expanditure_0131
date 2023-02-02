@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class DailyExpanditureTile extends StatelessWidget {
-  final String elementName;
+  final int elementName;
   final bool elementIncluded;
   // final Function(BuildContext)? settingsTapped;
   final Function(BuildContext)? deleteTapped;
@@ -24,13 +24,6 @@ class DailyExpanditureTile extends StatelessWidget {
         endActionPane: ActionPane(
           motion: StretchMotion(),
           children: [
-            // SlidableAction(
-            //   onPressed: settingsTapped,
-            //   backgroundColor: CupertinoColors.systemGrey3,
-            //   icon: CupertinoIcons.settings,
-            //   borderRadius: BorderRadius.circular(12),
-            // ),
-
             // delete option
             SlidableAction(
               onPressed: deleteTapped,
@@ -50,7 +43,7 @@ class DailyExpanditureTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               // element of list 'daily money'
-              Text(elementName),
+              Text('$elementName'),
               const SizedBox(width: 50),
               ElevatedButton(
                 onPressed: () => false,
