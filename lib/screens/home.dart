@@ -24,6 +24,7 @@ class _HomePageState extends State<HomePage> {
 
   int innerSum = 0; // Calculate the sum of all elements of List (Expanditure)
   double sum = 0.0; // get the value of `targetSum // (sum = moneyList)`
+  int dailySum = 0; // get the value of `targetSum - (sum = moneyList)`
 
   @override
   Widget build(BuildContext context) {
@@ -50,18 +51,19 @@ class _HomePageState extends State<HomePage> {
               },
             ),
           ),
-          Expanded(
-            child: Align(
+          // Expanded(
+            // child: Align(
+            Align(
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  _widgetDailyOutlays(),
+                  _widgetDailyOutlays(dailySum),
                   CustomElevatedButton(getValue: "Google Ads", customFixedSize: Size(MediaQuery.of(context).size.width * 0.9, 60))
                 ],
               ),
             ),
-          )
+          // )
         ],
       ),
     );
@@ -90,15 +92,15 @@ class _HomePageState extends State<HomePage> {
   }
 
   // List of Expanditure
-  CustomRow _widgetDailyOutlays() {
+  CustomRow _widgetDailyOutlays(int dailySum) {
     return CustomRow(
       children: [
-        const Text("Testing 1"),
+        const Text("하루지출"),
         const SizedBox(width: 20),
 
         ElevatedButton(
           onPressed: () => false,
-          child: const Text("Testing"),
+          child: Text("$dailySum"),
         ),
 
         const SizedBox(width: 35),
@@ -172,16 +174,19 @@ class _HomePageState extends State<HomePage> {
       print("Plus -> ${int.parse(moneyList[i][0]) + int.parse(moneyList[i][0])}");
     
       innerSum += int.parse(moneyList[i][0]); // Store into the innerSum
-    }
+    }    
     
     // If target money bigger than list of expanditure values, divide targetSum by targetSum
     // Otherwise, divide targetSum by innerSum
     if (targetSum >= innerSum) {
       sum = double.parse((innerSum / targetSum).toStringAsFixed(2));
+      dailySum = innerSum;
     } else {
       sum = double.parse((targetSum / innerSum).toStringAsFixed(2));
+      dailySum = innerSum;
     }
     print('Get SUM -> $sum');
+    print('Get Daily Sum -> $dailySum');
     
     // If targetSum didn't input before input the value of innerSum,
     // return hasSumValue false
