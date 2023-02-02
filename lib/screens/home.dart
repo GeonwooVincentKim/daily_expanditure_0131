@@ -17,7 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List moneyList = []; // list of money that user spend for a day
   int targetSum = 0; // target sum of money that user planned to use for a day
-  bool hasSumValue = false; // Check sum value input first
+  bool hasSumValue = true; // Check sum value input first
 
   final _newMoneyElementController = TextEditingController();
   final _newTargetAmountController = TextEditingController();
@@ -55,7 +55,7 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  _widgetDailyOutlays(),
+                  _widgetDailyOutlays(hasSumValue),
                   CustomElevatedButton(getValue: "Google Ads", customFixedSize: Size(MediaQuery.of(context).size.width * 0.9, 60))
                 ],
               ),
@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // List of Expanditure
-  CustomRow _widgetDailyOutlays() {
+  CustomRow _widgetDailyOutlays(bool hasSumValue) {
     return CustomRow(
       children: [
         const Text("Testing 1"),
@@ -174,26 +174,26 @@ class _HomePageState extends State<HomePage> {
       sum = targetSum - innerSum;
       
       return hasSumValue;
-    } else  {
+    } else if (targetSum < innerSum && targetSum == 0) {
       hasSumValue = false;
 
       print("NoNo");
       
-      CupertinoAlertDialog(
-        title: const Text("No"),
-        content: const Text("Impossible"),
-        actions: [
-          TextButton(
-            onPressed: cancelDialogBox,
-            child: const Text("Ok"),
-          )
-        ],
-        
-      );
+      // CupertinoAlertDialog(
+      //   title: const Text("No"),
+      //   content: const Text("Impossible"),
+      //   actions: [
+      //     TextButton(
+      //       onPressed: cancelDialogBox,
+      //       child: const Text("Ok"),
+      //     )
+      //   ]
+      // );
 
-      return hasSumValue;
     }
-    
+
+    return true;
+
     // If element 
     // if (innerSum < sum) {
     // } else {
