@@ -159,7 +159,9 @@ class _HomePageState extends State<HomePage> {
       saveDifference(innerSum);
     });
 
-    _newMoneyElementController.clear();
+    if (hasSumValue == true) {
+      _newMoneyElementController.clear();
+    }
     Navigator.of(context).pop();
   }
 
