@@ -4,7 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   await Hive.initFlutter();
-  await Hive.openBox("daily_db");
+  await Hive.openBox("money_db");
 
   runApp(const MyApp());
 }

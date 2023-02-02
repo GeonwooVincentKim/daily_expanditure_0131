@@ -1,3 +1,4 @@
+import 'package:daily_expanditure_0131/model/money.dart';
 import 'package:daily_expanditure_0131/shared/style.dart';
 import 'package:daily_expanditure_0131/widgets/custom/column_row/custom_row.dart';
 import 'package:daily_expanditure_0131/widgets/custom/custom_alert_dialog_box.dart';
@@ -6,6 +7,7 @@ import 'package:daily_expanditure_0131/widgets/custom/custom_elevated_button.dar
 import 'package:daily_expanditure_0131/widgets/daily_expanditure_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,7 +17,26 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List moneyList = []; // list of money that user spend for a day
+  Money db = Money();
+  final _myBox = Hive.box("money_db");
+
+  @override
+  void initState() {
+    // if there is no current money list, then it is the 1st time ever opening the app
+    // then create default data
+    if ((_myBox.get("CURRENT_MONEY_LIST") == null)) {
+      db.createDefaultData();
+    } else {
+      // already exists data
+      db.loadData();
+    }
+
+    // update db
+    db.updateDatabase();
+
+    super.initState();
+  }
+
   int targetSum = 0; // target sum of money that user planned to use for a day
   bool? hasSumValue; // Check sum value input first
 
@@ -40,11 +61,11 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             child: ListView.builder(
               shrinkWrap: true,
-              itemCount: moneyList.length,
+              itemCount: db.moneyList.length,
               itemBuilder: (context, index) {
                 return DailyExpanditureTile(
-                  elementName: int.parse(moneyList[index][0]),
-                  elementIncluded: moneyList[index][1],
+                  elementName: int.parse(db.moneyList[index][0]),
+                  elementIncluded: db.moneyList[index][1],
                   // settingsTapped: (context) => openExpandSettings(index),
                   deleteTapped: (context) => deleteExpand(index),
                 );
@@ -135,14 +156,15 @@ class _HomePageState extends State<HomePage> {
   // List of expanditure of today (Create - List)
   void saveNewExpand() {
     setState(() {
-      moneyList.add([_newMoneyElementController.text, false]);
-      // print(moneyList.runtimeType);
+      db.moneyList.add([_newMoneyElementController.text, false]);
+      // print(db.moneyList.runtimeType);
 
-      print("length -> ${moneyList.length}");
+      print("length -> ${db.moneyList.length}");
       
       // Calculate the sum
       saveDifference(innerSum, '+');
     });
+    db.updateDatabase();
 
     if (hasSumValue == true) {
       _newMoneyElementController.clear();
@@ -155,15 +177,17 @@ class _HomePageState extends State<HomePage> {
     // Not to set as String
     // This may cause type case error
     // Make sure parse the String value to Integer.
-    for (int i = 0; i < moneyList.length; i++) {
-      // print(moneyList[i][0].runtimeType); // Get current value's type
-      print("Values -> ${int.parse(moneyList[i][0])}");
-      // print("Plus -> ${int.parse(moneyList[i][0]) + int.parse(moneyList[i][0])}");
+    print("Exist ?? -> ${db.moneyList}");
+
+    for (int i = 0; i < db.moneyList.length; i++) {
+      // print(db.moneyList[i][0].runtimeType); // Get current value's type
+      print("Values -> ${int.parse(db.moneyList[i][0])}");
+      // print("Plus -> ${int.parse(db.moneyList[i][0]) + int.parse(db.moneyList[i][0])}");
     
       if (sign == '+') {
-        innerSum += int.parse(moneyList[i][0]); // Store into the innerSum
+        innerSum += int.parse(db.moneyList[i][0]); // Store into the innerSum
       } else if (sign == '-') {
-        innerSum -= int.parse(moneyList[i][0]); // Store into the innerSum
+        innerSum -= int.parse(db.moneyList[i][0]); // Store into the innerSum
       }
     }    
     
@@ -205,6 +229,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       targetSum = int.parse(_newTargetAmountController.text);
     });
+    db.updateDatabase();
 
     _newTargetAmountController.clear();
     Navigator.of(context).pop();
@@ -213,11 +238,12 @@ class _HomePageState extends State<HomePage> {
   // Delete from the list (Delete)
   void deleteExpand(int index) {
     setState(() {
-      moneyList.removeAt(index);
+      db.moneyList.removeAt(index);
 
       // Calculate the sum
       saveDifference(innerSum, '-');
     });
+    db.updateDatabase();
   }
 
   // Close the Dialog Box
