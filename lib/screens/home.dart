@@ -115,6 +115,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Input the new element of the list (expanditure)
+  // Input the targer value to controll hasSumValue
   void createNewExpanditure(TextEditingController textController, onSave, onCancel) {
     showCupertinoDialog(
       context: context,
@@ -131,22 +132,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Input the targer value to controll hasSumValue
-  void createNewTargetExpanditure(TextEditingController textController, onSave, onCancel) {
-    showCupertinoDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return CustomAlertDialogBox(
-          controller: textController,
-          hintText: "입력하세요",
-          hasSumValue: true,
-          onSave: onSave,
-          onCancel: onCancel,
-        );
-      }
-    );
-  }
-
   // List of expanditure of today (Create - List)
   void saveNewExpand() {
     setState(() {
@@ -156,7 +141,7 @@ class _HomePageState extends State<HomePage> {
       print("length -> ${moneyList.length}");
       
       // Calculate the sum
-      saveDifference(innerSum);
+      saveDifference(innerSum, '+');
     });
 
     if (hasSumValue == true) {
@@ -166,7 +151,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Save the difference of TargetSum and moneyList
-  void saveDifference(int innerSum) {
+  void saveDifference(int innerSum, String sign) {
     // Not to set as String
     // This may cause type case error
     // Make sure parse the String value to Integer.
@@ -175,17 +160,21 @@ class _HomePageState extends State<HomePage> {
       print("Values -> ${int.parse(moneyList[i][0])}");
       print("Plus -> ${int.parse(moneyList[i][0]) + int.parse(moneyList[i][0])}");
     
-      innerSum += int.parse(moneyList[i][0]); // Store into the innerSum
+      if (sign == '+') {
+        innerSum += int.parse(moneyList[i][0]); // Store into the innerSum
+      } else if (sign == '-') {
+        innerSum -= int.parse(moneyList[i][0]); // Store into the innerSum
+      }
     }    
     
     // If target money bigger than list of expanditure values, divide targetSum by targetSum
     // Otherwise, divide targetSum by innerSum
     if (targetSum >= innerSum) {
-      sum = double.parse((innerSum / targetSum).toStringAsFixed(2));
-      dailySum = innerSum;
+      sum = double.parse((innerSum / targetSum).toStringAsFixed(2)).abs();
+      dailySum = innerSum.abs();
     } else {
-      sum = double.parse((targetSum / innerSum).toStringAsFixed(2));
-      dailySum = innerSum;
+      sum = double.parse((targetSum / innerSum).toStringAsFixed(2)).abs();
+      dailySum = innerSum.abs();
     }
     print('Get SUM -> $sum');
     print('Get Daily Sum -> $dailySum');
@@ -214,6 +203,9 @@ class _HomePageState extends State<HomePage> {
   void deleteExpand(int index) {
     setState(() {
       moneyList.removeAt(index);
+
+      // Calculate the sum
+      saveDifference(innerSum, '-');
     });
   }
 
