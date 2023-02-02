@@ -17,12 +17,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List moneyList = []; // list of money that user spend for a day
   int targetSum = 0; // target sum of money that user planned to use for a day
-  bool hasSumValue = false; // Check sum value input first
+  bool? hasSumValue; // Check sum value input first
 
   final _newMoneyElementController = TextEditingController();
   final _newTargetAmountController = TextEditingController();
 
-  int sum = 0; // get the value of `targetSum - (sum = moneyList)`
+  int innerSum = 0; // Calculate the sum of all elements of List (Expanditure)
+  double sum = 0.0; // get the value of `targetSum // (sum = moneyList)`
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +31,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.grey[300],
       child: Column(
         children: [
-          _widgetTargetAmount(targetSum, hasSumValue),
+          _widgetTargetAmount(targetSum, true), // allows to set true input value anytime user wants
           
           // dummay variable to check the difference of targetSum and moneyList
           Text('$sum', style: const TextStyle(color: CupertinoColors.black),),
@@ -119,7 +120,24 @@ class _HomePageState extends State<HomePage> {
         return CustomAlertDialogBox(
           controller: textController,
           hintText: "입력하세요",
-          hasSumValue: false,
+          // hasSumValue: (targetSum <= 0) ? false : true,
+          hasSumValue: (textController == _newMoneyElementController && targetSum <= 0) ? false : true,
+          onSave: onSave,
+          onCancel: onCancel,
+        );
+      }
+    );
+  }
+
+  // Input the targer value to controll hasSumValue
+  void createNewTargetExpanditure(TextEditingController textController, onSave, onCancel) {
+    showCupertinoDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return CustomAlertDialogBox(
+          controller: textController,
+          hintText: "입력하세요",
+          hasSumValue: true,
           onSave: onSave,
           onCancel: onCancel,
         );
@@ -129,8 +147,6 @@ class _HomePageState extends State<HomePage> {
 
   // List of expanditure of today (Create - List)
   void saveNewExpand() {
-    int innerSum = 0; // Calculate the sum of all elements of List (Expanditure)
-
     setState(() {
       moneyList.add([_newMoneyElementController.text, false]);
       // print(moneyList.runtimeType);
@@ -146,7 +162,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Save the difference of TargetSum and moneyList
-  bool saveDifference(int innerSum) {
+  void saveDifference(int innerSum) {
     // Not to set as String
     // This may cause type case error
     // Make sure parse the String value to Integer.
@@ -158,19 +174,23 @@ class _HomePageState extends State<HomePage> {
       innerSum += int.parse(moneyList[i][0]); // Store into the innerSum
     }
     
-    if (targetSum > innerSum) {
-      hasSumValue = true;
-      sum = (targetSum - innerSum).abs();
-    } else if (targetSum < innerSum) {
-      hasSumValue = false;
+    // If target money bigger than list of expanditure values, divide targetSum by targetSum
+    // Otherwise, divide targetSum by innerSum
+    if (targetSum >= innerSum) {
+      sum = double.parse((innerSum / targetSum).toStringAsFixed(2));
+    } else {
+      sum = double.parse((targetSum / innerSum).toStringAsFixed(2));
     }
-     
-    return hasSumValue;
-    // If element 
-    // if (innerSum < sum) {
-    // } else {
-    //   sum = (innerSum - targetSum).abs();
-    // }
+    print('Get SUM -> $sum');
+    
+    // If targetSum didn't input before input the value of innerSum,
+    // return hasSumValue false
+    // Otherwise return true
+    if (targetSum == 0) {
+      hasSumValue = false;
+    } else {
+      hasSumValue = true;
+    }
   }
 
   // Save the target amount of today (Create - Object)
@@ -182,19 +202,6 @@ class _HomePageState extends State<HomePage> {
     _newTargetAmountController.clear();
     Navigator.of(context).pop();
   }
-
-  // Save the difference of TargetSum and moneyList
-  // void saveDifference() {
-  //   setState(() {
-  //     // Make sure parse the String value to Integer.
-  //     for (int i = 0; i < moneyList.length; i++) {
-  //       // print(moneyList[i][0].runtimeType); // Get current value's type
-  //       sum += int.parse(moneyList[i][0]);
-  //     }
-
-  //     sum = targetSum - sum;
-  //   });
-  // }
 
   // Delete from the list (Delete)
   void deleteExpand(int index) {
