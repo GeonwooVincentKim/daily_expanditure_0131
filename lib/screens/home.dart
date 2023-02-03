@@ -123,7 +123,6 @@ class _HomePageState extends State<HomePage> {
         return CustomAlertDialogBox(
           controller: textController,
           hintText: "입력하세요",
-          // hasSumValue: (targetSum <= 0) ? false : true,
           hasSumValue: (textController == _newMoneyElementController && targetSum <= 0) ? false : true,
           onSave: onSave,
           onCancel: onCancel,
