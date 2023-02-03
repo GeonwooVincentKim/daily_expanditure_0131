@@ -38,15 +38,12 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  // int targetSum = 0; // target sum of money that user planned to use for a day
   bool? hasSumValue; // Check sum value input first
 
   final _newMoneyElementController = TextEditingController();
   final _newTargetAmountController = TextEditingController();
 
   int innerSum = 0; // Calculate the sum of all elements of List (Expanditure)
-  // double differenceSum = 0.0; // get the value of `targetSum // (sum = moneyList)`
-  int dailySum = 0; // get the value of `targetSum - (sum = moneyList)`
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +77,7 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  _widgetDailyOutlays(dailySum),
+                  _widgetDailyOutlays(db.dailySum),
                   CustomElevatedButton(getValue: "Google Ads", customFixedSize: Size(MediaQuery.of(context).size.width * 0.9, 60))
                 ],
               ),
@@ -193,13 +190,13 @@ class _HomePageState extends State<HomePage> {
     }    
     
     // Get DailySum from innerSum
-    dailySum = innerSum.abs();
+    db.dailySum = innerSum.abs();
     
     // If dailySum is less smaller than targetSum, divide innerSum by targetSum
     // Otherwise, divide dailySum by targetSum.
-    if (dailySum <= db.targetSum) {
+    if (db.dailySum <= db.targetSum) {
       db.differenceSum = double.parse((innerSum / db.targetSum).abs().toStringAsFixed(2));
-    } else if (dailySum > db.targetSum) {
+    } else if (db.dailySum > db.targetSum) {
       db.differenceSum = double.parse((db.targetSum / innerSum).abs().toStringAsFixed(2));
     }
 
