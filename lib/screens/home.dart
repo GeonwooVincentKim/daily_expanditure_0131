@@ -16,14 +16,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List moneyList = []; // list of money that user spend for a day
-  int targetSum = 0; // target sum of money that user planned to use for a day
   bool? hasSumValue; // Check sum value input first
 
   final _newMoneyElementController = TextEditingController();
   final _newTargetAmountController = TextEditingController();
 
   int innerSum = 0; // Calculate the sum of all elements of List (Expanditure)
-  double differenceSum = 0.0; // get the value of `targetSum // (sum = moneyList)`
   int dailySum = 0; // get the value of `targetSum - (sum = moneyList)`
 
   @override
