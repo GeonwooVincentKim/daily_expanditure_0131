@@ -20,13 +20,18 @@ final _myBox = Hive.box("money_db");
  */
 
 class Money {
+  // Convert List to the Map -> Map<DateTime, int>;
   List moneyList = []; // list of money that user spend for a day
+  int targetSum = 0; // target sum of money that user planned to use for a day
+  double differenceSum = 0.0; // get the value of `targetSum // (sum = moneyList)`
 
   // create initial default data
   void createDefaultData() {
     moneyList = [];
 
     _myBox.put("START_DATE", todaysDateFormatted());
+    _myBox.put("TARGET_SUM", targetSum);
+    _myBox.put("DIFFERENCE_SUM", differenceSum);
   }
 
   // load data if is already exists
@@ -42,6 +47,8 @@ class Money {
     } else {
       // if it's not a new day, load todays list
       moneyList = _myBox.get(todaysDateFormatted());
+      targetSum = _myBox.get("TARGET_SUM");
+      differenceSum = _myBox.get("DIFFERENCE_SUM");
     }
   }
 
@@ -52,6 +59,7 @@ class Money {
 
     // update universal money list in case it changed (new habit, edit habit, delete habit)
     _myBox.put("CURRENT_MONEY_LIST", moneyList);
-
+    _myBox.put("TARGET_SUM", targetSum);
+    _myBox.put("DIFFERENCE_SUM", differenceSum);
   }
 }
