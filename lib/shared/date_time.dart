@@ -57,6 +57,5 @@ String convertDateTimeToString(DateTime dateTime) {
 
   // final format
   String yyyymmdd = year + month + day;
-  
   return yyyymmdd;
 }
