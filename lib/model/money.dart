@@ -26,6 +26,8 @@ class Money {
   double differenceSum = 0.0; // get the value of `targetSum // (sum = moneyList)`
   int dailySum = 0; // get the value of `targetSum - (sum = moneyList)`
 
+  Map<DateTime, int> heatMapDataSet = {};
+
   // create initial default data
   void createDefaultData() {
     moneyList = [];
@@ -65,5 +67,59 @@ class Money {
     _myBox.put("TARGET_SUM", targetSum);
     _myBox.put("DIFFERENCE_SUM", differenceSum);
     _myBox.put("DAILY_SUM", dailySum);
+
+    // calculate money list in case it change (new money element, edit money element, delete money element)
+    // calculateMoneyPercentages();
+
+    // loadHeatMap();
+  }
+
+  void calculateMoneyPercentages() {
+    int countCompleted = 0;
+    for (int i = 0; i < moneyList.length; i++) {
+      if (moneyList[i][1] == true) {
+        countCompleted++;
+      }
+    }
+
+    String percent = moneyList.isEmpty
+      ? '0.0'
+      : (countCompleted / moneyList.length).toStringAsFixed(1);
+    
+    _myBox.put("DIFFERENCE_SUM_${todaysDateFormatted()}", percent);
+  }
+
+  void loadHeatMap() {
+    DateTime startDate = createDateTimeObject(_myBox.get("START_DATE"));
+
+    // count the number of days to load
+    int daysInBetweeen = DateTime.now().difference(startDate).inDays;
+
+    // go from start date to today and add each percentage to the dataset
+    // "PERCENTAGE_SUMMARY_yyyymmdd" will be the key in the database
+    for (int i = 0; i < daysInBetweeen + 1; i++) {
+      String yyyymmdd = convertDateTimeToString(startDate.add(Duration(days: 1)));
+      // double strengthAsPercent = double.parse(_myBox.get("PERCENTAGE_SUMMARY_$yyyymmdd") ?? "0.0");
+      double strengthAsPercent = double.parse(_myBox.get("DIFFERENCE_SUM_$yyyymmdd") ?? "0.0");
+
+
+      // split the datatime up like below so it doesn't worry about hours/mins/secs etc.
+
+      // year
+      int year = startDate.add(Duration(days: i)).year;
+
+      // month
+      int month = startDate.add(Duration(days: i)).month;
+
+      // day
+      int day = startDate.add(Duration(days: i)).day;
+
+      final percentForEachDay = <DateTime, int> {
+        DateTime(year, month, day) : (10 + strengthAsPercent).toInt()
+      };
+
+      heatMapDataSet.addEntries(percentForEachDay.entries);
+      print(heatMapDataSet);
+    }
   }
 }

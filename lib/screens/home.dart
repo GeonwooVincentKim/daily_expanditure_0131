@@ -1,10 +1,12 @@
 import 'package:daily_expanditure_0131/model/money.dart';
+import 'package:daily_expanditure_0131/shared/date_time.dart';
 import 'package:daily_expanditure_0131/shared/style.dart';
 import 'package:daily_expanditure_0131/widgets/custom/column_row/custom_row.dart';
 import 'package:daily_expanditure_0131/widgets/custom/custom_alert_dialog_box.dart';
 import 'package:daily_expanditure_0131/widgets/custom/custom_circle_avatar.dart';
 import 'package:daily_expanditure_0131/widgets/custom/custom_elevated_button.dart';
 import 'package:daily_expanditure_0131/widgets/daily_expanditure_tile.dart';
+import 'package:daily_expanditure_0131/widgets/heatmap/heatmap_summary.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -55,7 +57,8 @@ class _HomePageState extends State<HomePage> {
           
           // dummay variable to check the difference of targetSum and moneyList
           Text('${db.differenceSum}', style: const TextStyle(color: CupertinoColors.black),),
-          
+          HeatmapSummary(datasets: db.heatMapDataSet, startDate: _myBox.get("START_DATE")),
+
           Expanded(
             child: ListView.builder(
               shrinkWrap: true,
