@@ -25,6 +25,7 @@ class Money {
   int targetSum = 0; // target sum of money that user planned to use for a day
   double differenceSum = 0.0; // get the value of `targetSum // (sum = moneyList)`
   int dailySum = 0; // get the value of `targetSum - (sum = moneyList)`
+  double newDifferenceSum = 0.0;
 
   Map<DateTime, int> heatMapDataSet = {};
 
@@ -45,14 +46,14 @@ class Money {
       moneyList = _myBox.get("CURRENT_MONEY_LIST");
 
       // set all money completed to false since it's a new day
-      for (int i = 0; i < moneyList.length; i++) {
-        moneyList[i][1] = false;
-      }
+      // for (int i = 0; i < moneyList.length; i++) {
+      //   moneyList[i][1] = true;
+      // }
     } else {
       // if it's not a new day, load todays list
       moneyList = _myBox.get(todaysDateFormatted());
       targetSum = _myBox.get("TARGET_SUM");
-      differenceSum = _myBox.get("DIFFERENCE_SUM");
+      differenceSum = _myBox.get("DIFFERENCE_SUM_${todaysDateFormatted()}");
       dailySum = _myBox.get("DAILY_SUM");
     }
   }
@@ -65,7 +66,7 @@ class Money {
     // update universal money list in case it changed (new habit, edit habit, delete habit)
     _myBox.put("CURRENT_MONEY_LIST", moneyList);
     _myBox.put("TARGET_SUM", targetSum);
-    _myBox.put("DIFFERENCE_SUM", differenceSum);
+    _myBox.put("DIFFERENCE_SUM_${todaysDateFormatted()}", differenceSum);
     _myBox.put("DAILY_SUM", dailySum);
 
     // calculate money list in case it change (new money element, edit money element, delete money element)
@@ -77,16 +78,15 @@ class Money {
   void calculateMoneyPercentages() {
     int countCompleted = 0;
     for (int i = 0; i < moneyList.length; i++) {
-      if (moneyList[i][1] == true) {
-        countCompleted++;
-      }
+      countCompleted++;
     }
 
     String percent = moneyList.isEmpty
       ? '0.0'
-      : (countCompleted / moneyList.length).toStringAsFixed(1);
+      : (countCompleted / moneyList.length).toStringAsFixed(2);
     
-    _myBox.put("DIFFERENCE_SUM_${todaysDateFormatted()}", percent);
+    print("Get Sum~! -> $percent");
+    _myBox.put("NEW_DIFFERENCE_SUM_${todaysDateFormatted()}", percent);
   }
 
   void loadHeatMap() {
@@ -100,8 +100,8 @@ class Money {
     for (int i = 0; i < daysInBetweeen + 1; i++) {
       String yyyymmdd = convertDateTimeToString(startDate.add(Duration(days: 1)));
       // double strengthAsPercent = double.parse(_myBox.get("PERCENTAGE_SUMMARY_$yyyymmdd") ?? "0.0");
-      double strengthAsPercent = double.parse(_myBox.get("DIFFERENCE_SUM_$yyyymmdd") ?? "0.0");
-
+      double strengthAsPercent = double.parse(_myBox.get("NEW_DIFFERENCE_SUM_$yyyymmdd") ?? "0.0");
+      print("strengthAsPercent -> $strengthAsPercent");
 
       // split the datatime up like below so it doesn't worry about hours/mins/secs etc.
 
@@ -114,12 +114,18 @@ class Money {
       // day
       int day = startDate.add(Duration(days: i)).day;
 
-      final percentForEachDay = <DateTime, int> {
-        DateTime(year, month, day) : (10 + strengthAsPercent).toInt()
-      };
+      if (moneyList == null) {
+        
+      } else {
+        // heatMapDataSet[DateTime(year, month, day) : (100 + strengthAsPercent)] = strengthAsPercent.toInt();
+        final percentForEachDay = <DateTime, int> {
+          DateTime(year, month, day) : (100 + strengthAsPercent).toInt()
+        };
 
-      heatMapDataSet.addEntries(percentForEachDay.entries);
-      print(heatMapDataSet);
+        print("HeatMap Set -> ${DateTime.parse(yyyymmdd)}");
+        heatMapDataSet.addEntries(percentForEachDay.entries);
+        print(heatMapDataSet);
+      }
     }
   }
 }

@@ -22,12 +22,13 @@ class _HomePageState extends State<HomePage> {
   Money db = Money();
   final _myBox = Hive.box("money_db");
 
+  double newDifferenceSum = 0.0;
+
   @override
   void initState() {
     // if there is no current money list, then it is the 1st time ever opening the app
     // then create default data
-    if ((_myBox.get("CURRENT_MONEY_LIST") == null) || (_myBox.get("TARGET_SUM") == null)
-      || (_myBox.get("DIFFERENCE_SUM") == null)) {
+    if ((_myBox.get("CURRENT_MONEY_LIST") == null) || (_myBox.get("TARGET_SUM") == null)) {
       db.createDefaultData();
     } else {
       // already exists data
@@ -199,8 +200,14 @@ class _HomePageState extends State<HomePage> {
     // Otherwise, divide dailySum by targetSum.
     if (db.dailySum <= db.targetSum) {
       db.differenceSum = double.parse((innerSum / db.targetSum).abs().toStringAsFixed(2));
+      newDifferenceSum = db.differenceSum;
+      print("Get -> $newDifferenceSum");
+      // _myBox.put("NEW_DIFFERENCE_SUM_${todaysDateFormatted()}", newDifferenceSum);
     } else if (db.dailySum > db.targetSum) {
       db.differenceSum = double.parse((db.targetSum / innerSum).abs().toStringAsFixed(2));
+      newDifferenceSum = db.differenceSum;
+      print("Get -> $newDifferenceSum");
+      // _myBox.put("NEW_DIFFERENCE_SUM_${todaysDateFormatted()}", newDifferenceSum);
     }
 
     print('Get SUM -> ${db.differenceSum}');
@@ -222,6 +229,55 @@ class _HomePageState extends State<HomePage> {
       hasSumValue = false;
     } else {
       hasSumValue = true;
+    }
+
+    DateTime startDate = createDateTimeObject(_myBox.get("START_DATE"));
+    // count the number of days to load
+    int daysInBetweeen = DateTime.now().difference(startDate).inDays;
+
+    // go from start date to today and add each percentage to the dataset
+    // "PERCENTAGE_SUMMARY_yyyymmdd" will be the key in the database
+    for (int i = 0; i < daysInBetweeen + 1; i++) {
+      String yyyymmdd = convertDateTimeToString(startDate.add(Duration(days: 1)));
+      // double strengthAsPercent = double.parse(_myBox.get("PERCENTAGE_SUMMARY_$yyyymmdd") ?? "0.0");
+      double strengthAsPercent = db.differenceSum;
+      // double strengthAsPercent = double.parse(_myBox.get("NEW_DIFFERENCE_SUM_$yyyymmdd") ?? "0.0");
+      print("strengthAsPercent -> $strengthAsPercent");
+
+
+      // newDifferenceSum = double.parse(_myBox.get("NEW_DIFFERENCE_SUM_$yyyymmdd") ?? "0.0");
+      // print("strengthAsPercent -> $newDifferenceSum");
+
+      // split the datatime up like below so it doesn't worry about hours/mins/secs etc.
+
+      // year
+      int year = startDate.add(Duration(days: i)).year;
+
+      // month
+      int month = startDate.add(Duration(days: i)).month;
+
+      // day
+      int day = startDate.add(Duration(days: i)).day;
+
+      int rate = (db.differenceSum * 100).toInt();
+      rate = rate > 100 ? 100 : rate;
+      print("rate -> $rate");
+
+      db.heatMapDataSet[DateTime(year, month, day)] = rate;
+
+
+      // final percentForEachDay = <DateTime, int> {
+      //   DateTime(year, month, day) : (10 + strengthAsPercent).toInt()
+      // };
+
+
+      // int rate = newDifferenceSum.toInt();
+  
+
+      // print("HeatMap Set -> ${DateTime.parse(yyyymmdd)}");
+      // // db.heatMapDataSet = newDifferenceSum.toString as Map<DateTime, int>;
+      // db.heatMapDataSet.addEntries(percentForEachDay.entries);
+      // print(db.heatMapDataSet);
     }
   }
 
