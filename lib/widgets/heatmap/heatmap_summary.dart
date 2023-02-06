@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 
 class HeatmapSummary extends StatelessWidget {
-  final Map<DateTime, int>? datasets;
+  final Map<DateTime, int> datasets;
   final String startDate;
 
-  const HeatmapSummary({super.key, this.datasets, required this.startDate});
+  const HeatmapSummary({super.key, required this.datasets, required this.startDate});
 
   @override
   Widget build(BuildContext context) {
@@ -15,10 +15,10 @@ class HeatmapSummary extends StatelessWidget {
       child: HeatMap(
         // startDate: createDateTimeObject(startDate),
         startDate: DateTime(nowDate.year, nowDate.month, 1),
-        // endDate: DateTime.now().add(Duration(days: 0)),
-        endDate: DateTime(nowDate.year, nowDate.month + 1, 0),
+        endDate: DateTime.now().add(Duration(days: 40)),
+        // endDate: DateTime(nowDate.year, nowDate.month + 1, 0),
         datasets: datasets,
-        colorMode: ColorMode.opacity,
+        colorMode: ColorMode.color,
         // defaultColor: Colors.grey[200],
         // textColor: Colors.white,
         showColorTip: false,

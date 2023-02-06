@@ -23,6 +23,8 @@ class _HomePageState extends State<HomePage> {
   final _myBox = Hive.box("money_db");
 
   double newDifferenceSum = 0.0;
+  Map<DateTime, int> testMap = {DateTime(2023, 02, 06) : 1};
+
 
   @override
   void initState() {
@@ -46,6 +48,7 @@ class _HomePageState extends State<HomePage> {
   final _newMoneyElementController = TextEditingController();
   final _newTargetAmountController = TextEditingController();
 
+
   int innerSum = 0; // Calculate the sum of all elements of List (Expanditure)
 
   @override
@@ -58,7 +61,8 @@ class _HomePageState extends State<HomePage> {
           
           // dummay variable to check the difference of targetSum and moneyList
           Text('${db.differenceSum}', style: const TextStyle(color: CupertinoColors.black),),
-          HeatmapSummary(datasets: db.heatMapDataSet, startDate: _myBox.get("START_DATE")),
+          // HeatmapSummary(datasets: testMap, startDate: _myBox.get("START_DATE")),
+          HeatmapSummary(datasets: testMap, startDate: ''),
 
           Expanded(
             child: ListView.builder(
@@ -202,12 +206,12 @@ class _HomePageState extends State<HomePage> {
       db.differenceSum = double.parse((innerSum / db.targetSum).abs().toStringAsFixed(2));
       newDifferenceSum = db.differenceSum;
       print("Get -> $newDifferenceSum");
-      // _myBox.put("NEW_DIFFERENCE_SUM_${todaysDateFormatted()}", newDifferenceSum);
+      _myBox.put("NEW_DIFFERENCE_SUM_${todaysDateFormatted()}", newDifferenceSum);
     } else if (db.dailySum > db.targetSum) {
       db.differenceSum = double.parse((db.targetSum / innerSum).abs().toStringAsFixed(2));
       newDifferenceSum = db.differenceSum;
       print("Get -> $newDifferenceSum");
-      // _myBox.put("NEW_DIFFERENCE_SUM_${todaysDateFormatted()}", newDifferenceSum);
+      _myBox.put("NEW_DIFFERENCE_SUM_${todaysDateFormatted()}", newDifferenceSum);
     }
 
     print('Get SUM -> ${db.differenceSum}');
@@ -259,23 +263,19 @@ class _HomePageState extends State<HomePage> {
       // day
       int day = startDate.add(Duration(days: i)).day;
 
-      int rate = (db.differenceSum * 100).toInt();
-      rate = rate > 100 ? 100 : rate;
-      print("rate -> $rate");
+      // int rate = (db.differenceSum * 100).toInt();
+      // rate = rate > 100 ? 100 : rate;
+      // print("rate -> $rate");
 
-      db.heatMapDataSet[DateTime(year, month, day)] = rate;
+      // db.heatMapDataSet[DateTime(year, month, day)] = rate;
 
-
+      // db.heatMapDataSet = {DateTime(year, month, day) : 1};
       // final percentForEachDay = <DateTime, int> {
       //   DateTime(year, month, day) : (10 + strengthAsPercent).toInt()
       // };
 
-
-      // int rate = newDifferenceSum.toInt();
-  
-
-      // print("HeatMap Set -> ${DateTime.parse(yyyymmdd)}");
-      // // db.heatMapDataSet = newDifferenceSum.toString as Map<DateTime, int>;
+      print("HeatMap Set -> ${DateTime.parse(yyyymmdd)}");
+      // db.heatMapDataSet = newDifferenceSum.toString as Map<DateTime, int>;
       // db.heatMapDataSet.addEntries(percentForEachDay.entries);
       // print(db.heatMapDataSet);
     }

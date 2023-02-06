@@ -72,35 +72,40 @@ class Money {
     // calculate money list in case it change (new money element, edit money element, delete money element)
     // calculateMoneyPercentages();
 
-    // loadHeatMap();
+    // loadHeatMap(differenceSum);
   }
 
   void calculateMoneyPercentages() {
-    int countCompleted = 0;
-    for (int i = 0; i < moneyList.length; i++) {
-      countCompleted++;
-    }
+    // int countCompleted = 0;
+    // for (int i = 0; i < moneyList.length; i++) {
+    //   countCompleted++;
+    // }
+    if (moneyList.isNotEmpty && differenceSum != 0.0) {
+      print("differentSum -> $differenceSum");
 
-    String percent = moneyList.isEmpty
-      ? '0.0'
-      : (countCompleted / moneyList.length).toStringAsFixed(2);
-    
-    print("Get Sum~! -> $percent");
-    _myBox.put("NEW_DIFFERENCE_SUM_${todaysDateFormatted()}", percent);
+      String percent = moneyList.isEmpty
+        ? '0.0'
+        : (differenceSum / moneyList.length).toStringAsFixed(2);
+      
+      print("Get Sum~! -> $percent");
+      _myBox.put("NEW_DIFFERENCE_SUM_${todaysDateFormatted()}", percent);
+    }
   }
 
-  void loadHeatMap() {
+  void loadHeatMap(differenceSum) {
     DateTime startDate = createDateTimeObject(_myBox.get("START_DATE"));
 
     // count the number of days to load
     int daysInBetweeen = DateTime.now().difference(startDate).inDays;
+    print("DifferenceSm -> $differenceSum");
 
     // go from start date to today and add each percentage to the dataset
     // "PERCENTAGE_SUMMARY_yyyymmdd" will be the key in the database
     for (int i = 0; i < daysInBetweeen + 1; i++) {
       String yyyymmdd = convertDateTimeToString(startDate.add(Duration(days: 1)));
       // double strengthAsPercent = double.parse(_myBox.get("PERCENTAGE_SUMMARY_$yyyymmdd") ?? "0.0");
-      double strengthAsPercent = double.parse(_myBox.get("NEW_DIFFERENCE_SUM_$yyyymmdd") ?? "0.0");
+      // double strengthAsPercent = double.parse(_myBox.get("NEW_DIFFERENCE_SUM_$yyyymmdd") ?? "0.0");
+      double strengthAsPercent = differenceSum ?? 0.0;
       print("strengthAsPercent -> $strengthAsPercent");
 
       // split the datatime up like below so it doesn't worry about hours/mins/secs etc.
@@ -113,16 +118,22 @@ class Money {
 
       // day
       int day = startDate.add(Duration(days: i)).day;
-
-      if (moneyList == null) {
         
-      } else {
+      if (moneyList.isNotEmpty && differenceSum != 0.0) {
         // heatMapDataSet[DateTime(year, month, day) : (100 + strengthAsPercent)] = strengthAsPercent.toInt();
-        final percentForEachDay = <DateTime, int> {
-          DateTime(year, month, day) : (100 + strengthAsPercent).toInt()
-        };
-
+        int rate = (strengthAsPercent * 10).toInt();
+        rate = rate > 10 ? 10 : rate;
+        print("rate -> $rate");
+        
+        // final percentForEachDay = <DateTime, int> {
+        //   DateTime(year, month, day) : (100 + strengthAsPercent).toInt()
+        // };
+        final Map<DateTime, int> percentForEachDay = {DateTime(year, month, day) : 1};
+        
+        print("percent For Each day -> $rate");
         print("HeatMap Set -> ${DateTime.parse(yyyymmdd)}");
+
+        // heatMapDataSet[DateTime(year, month, day)] = rate;
         heatMapDataSet.addEntries(percentForEachDay.entries);
         print(heatMapDataSet);
       }
