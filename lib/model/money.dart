@@ -67,8 +67,8 @@ class Money {
   // update database
   void updateDatabase() {
     // update todays entry
-    // _myBox.put(todaysDateFormatted(), moneyList);
-    _myBox.put(todaysDateFormatted() + "DIFFERENCE_SUM_${todaysDateFormatted()}" + "TARGET_SUM" + "DAILY_SUM", moneyList);
+    _myBox.put(todaysDateFormatted(), moneyList);
+    // _myBox.put(todaysDateFormatted() + "DIFFERENCE_SUM_${todaysDateFormatted()}" + "TARGET_SUM" + "DAILY_SUM", moneyList);
     print(heatMapDataSet);
     // _myBox.put(todaysDateFormatted(), targetSum);
     // _myBox.put(todaysDateFormatted(), dailySum);
