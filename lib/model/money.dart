@@ -67,8 +67,8 @@ class Money {
   // update database
   void updateDatabase() {
     // update todays entry
-    _myBox.put(todaysDateFormatted(), moneyList);
-    // _myBox.put(todaysDateFormatted() + "DIFFERENCE_SUM_${todaysDateFormatted()}" + "TARGET_SUM" + "DAILY_SUM", moneyList);
+    // _myBox.put(todaysDateFormatted(), moneyList);
+    _myBox.put(todaysDateFormatted() + "DIFFERENCE_SUM_${todaysDateFormatted()}" + "TARGET_SUM" + "DAILY_SUM", moneyList);
     print(heatMapDataSet);
     // _myBox.put(todaysDateFormatted(), targetSum);
     // _myBox.put(todaysDateFormatted(), dailySum);
@@ -109,6 +109,9 @@ class Money {
 
     // go from start date to today and add each percentage to the dataset
     // "PERCENTAGE_SUMMARY_yyyymmdd" will be the key in the database
+
+    // 시작일부터 시작하여 today 까지 각 percentage 를 dataset 에 추가한다.
+    // "PERCENTAGE_SUMMARY_yyyymmdd" 는 DB 의 key 값이 될 것이다.
     for (int i = 0; i < daysInBetweeen + 1; i++) {
       String yyyymmdd = convertDateTimeToString(startDate.add(Duration(days: 1)));
       double strengthAsPercent = differenceSum ?? 0.0;
