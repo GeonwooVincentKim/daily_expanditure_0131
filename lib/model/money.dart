@@ -37,6 +37,7 @@ class Money {
     _myBox.put("TARGET_SUM", targetSum);
     _myBox.put("DIFFERENCE_SUM", differenceSum);
     _myBox.put("DAILY_SUM", dailySum);
+    // _myBox.put("HEAT_MAP_DATASET", heatMapDataSet);
   }
 
   // load data if is already exists
@@ -44,6 +45,7 @@ class Money {
     // if it's a new day, get money list from database
     if (_myBox.get(todaysDateFormatted()) == null) {
       moneyList = _myBox.get("CURRENT_MONEY_LIST");
+      dailySum = _myBox.get("DAILY_SUM");
 
       // set all money completed to false since it's a new day
       // for (int i = 0; i < moneyList.length; i++) {
@@ -55,6 +57,7 @@ class Money {
       targetSum = _myBox.get("TARGET_SUM");
       differenceSum = _myBox.get("DIFFERENCE_SUM_${todaysDateFormatted()}");
       dailySum = _myBox.get("DAILY_SUM");
+      // heatMapDataSet = _myBox.get(todaysDateFormatted());
     }
   }
 
@@ -62,7 +65,8 @@ class Money {
   void updateDatabase() {
     // update todays entry
     _myBox.put(todaysDateFormatted(), moneyList);
-
+    // _myBox.put(todaysDateFormatted(), heatMapDataSet);
+    
     // update universal money list in case it changed (new habit, edit habit, delete habit)
     _myBox.put("CURRENT_MONEY_LIST", moneyList);
     _myBox.put("TARGET_SUM", targetSum);
@@ -72,14 +76,10 @@ class Money {
     // calculate money list in case it change (new money element, edit money element, delete money element)
     // calculateMoneyPercentages();
 
-    // loadHeatMap(differenceSum);
+    loadHeatMap(differenceSum);
   }
 
   void calculateMoneyPercentages() {
-    // int countCompleted = 0;
-    // for (int i = 0; i < moneyList.length; i++) {
-    //   countCompleted++;
-    // }
     if (moneyList.isNotEmpty && differenceSum != 0.0) {
       print("differentSum -> $differenceSum");
 
@@ -103,8 +103,6 @@ class Money {
     // "PERCENTAGE_SUMMARY_yyyymmdd" will be the key in the database
     for (int i = 0; i < daysInBetweeen + 1; i++) {
       String yyyymmdd = convertDateTimeToString(startDate.add(Duration(days: 1)));
-      // double strengthAsPercent = double.parse(_myBox.get("PERCENTAGE_SUMMARY_$yyyymmdd") ?? "0.0");
-      // double strengthAsPercent = double.parse(_myBox.get("NEW_DIFFERENCE_SUM_$yyyymmdd") ?? "0.0");
       double strengthAsPercent = differenceSum ?? 0.0;
       print("strengthAsPercent -> $strengthAsPercent");
 
@@ -120,20 +118,16 @@ class Money {
       int day = startDate.add(Duration(days: i)).day;
         
       if (moneyList.isNotEmpty && differenceSum != 0.0) {
-        // heatMapDataSet[DateTime(year, month, day) : (100 + strengthAsPercent)] = strengthAsPercent.toInt();
         int rate = (strengthAsPercent * 10).toInt();
         rate = rate > 10 ? 10 : rate;
         print("rate -> $rate");
         
-        // final percentForEachDay = <DateTime, int> {
-        //   DateTime(year, month, day) : (100 + strengthAsPercent).toInt()
-        // };
-        final Map<DateTime, int> percentForEachDay = {DateTime(year, month, day) : 1};
+
+        final Map<DateTime, int> percentForEachDay = {DateTime(year, month, day) : (rate).toInt()};
         
-        print("percent For Each day -> $rate");
+        print("percent For Each day -> $percentForEachDay");
         print("HeatMap Set -> ${DateTime.parse(yyyymmdd)}");
 
-        // heatMapDataSet[DateTime(year, month, day)] = rate;
         heatMapDataSet.addEntries(percentForEachDay.entries);
         print(heatMapDataSet);
       }
