@@ -10,6 +10,7 @@ import 'package:daily_expanditure_0131/widgets/heatmap/heatmap_summary.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,7 +21,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Money db = Money();
-  final _myBox = Hive.box("money_db");
+  Box<dynamic> _myBox = Hive.box("money_db");
+  late String _workDate;
+  late DateTime _startDate;
+  late DateTime _endDate;
 
   double newDifferenceSum = 0.0;
 
@@ -28,12 +32,18 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // if there is no current money list, then it is the 1st time ever opening the app
     // then create default data
+    // _workDate = todaysDateFormatted();
+    // _workDate = DateFormat('yyyyMMdd').format(_startDate);
+    // _startDate = DateTime.parse('yyyymmdd');
+
     if ((_myBox.get("CURRENT_MONEY_LIST") == null) || (_myBox.get("TARGET_SUM") == null)) {
       db.createDefaultData();
     } else {
       // already exists data
       db.loadData();
     }
+
+    // db.loadHeatMap();
 
     // update db
     db.updateDatabase();
