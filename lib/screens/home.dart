@@ -1,4 +1,5 @@
 import 'package:daily_expanditure_0131/model/custom_money.dart';
+import 'package:daily_expanditure_0131/shared/date_util.dart';
 import 'package:daily_expanditure_0131/shared/style.dart';
 import 'package:daily_expanditure_0131/widgets/custom/column_row/custom_row.dart';
 import 'package:daily_expanditure_0131/widgets/custom/custom_alert_dialog_box.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,6 +23,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final box = Hive.openBox<CustomMoney>("money");
+  late String _workYmd;
+  late DateTime _startDate;
+  late DateTime _endDate;
+
+  Map<DateTime, int> heatMapDatasets = {};
+  DateTime now = DateTime.now();
 
   List moneyList = []; // list of money that user spend for a day
   int targetSum = 0; // target sum of money that user planned to use for a day
@@ -35,6 +43,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
+    _workYmd = getToday();
+    _startDate = DateTime.parse(DateFormat('yyyyMMdd').format(DateTime(now.year, now.month, 1)));
+    _endDate = DateTime.parse(DateFormat('yyyyMMdd').format(DateTime(now.year, now.month + 1, 0)));
+
     super.initState();
   }
 
