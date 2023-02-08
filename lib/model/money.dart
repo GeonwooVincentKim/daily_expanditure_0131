@@ -112,8 +112,8 @@ class Money {
 
     // 시작일부터 시작하여 today 까지 각 percentage 를 dataset 에 추가한다.
     // "PERCENTAGE_SUMMARY_yyyymmdd" 는 DB 의 key 값이 될 것이다.
-    for (int i = 0; i < daysInBetweeen + 1; i++) {
-      String yyyymmdd = convertDateTimeToString(startDate.add(Duration(days: 1)));
+    for (int i = 0; i <= daysInBetweeen; i++) {
+      String yyyymmdd = convertDateTimeToString(startDate.add(Duration(days: i)));
       double strengthAsPercent = differenceSum ?? 0.0;
       print("strengthAsPercent -> $strengthAsPercent");
 
