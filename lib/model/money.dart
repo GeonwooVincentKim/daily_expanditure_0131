@@ -45,9 +45,9 @@ class Money {
     // if it's a new day, get money list from database
     // also get daily_sum and target_sum
     if (_myBox.get(todaysDateFormatted()) == null) {
-      moneyList = _myBox.get("CURRENT_MONEY_LIST");
-      dailySum = _myBox.get("DAILY_SUM");
-      targetSum = _myBox.get("TARGET_SUM");
+      // moneyList = _myBox.get("CURRENT_MONEY_LIST");
+      // dailySum = _myBox.get("DAILY_SUM");
+      // targetSum = _myBox.get("TARGET_SUM");
 
       // set all money completed to false since it's a new day
       // for (int i = 0; i < moneyList.length; i++) {
@@ -114,7 +114,8 @@ class Money {
     // "PERCENTAGE_SUMMARY_yyyymmdd" 는 DB 의 key 값이 될 것이다.
     for (int i = 0; i <= daysInBetweeen; i++) {
       String yyyymmdd = convertDateTimeToString(startDate.add(Duration(days: i)));
-      double strengthAsPercent = differenceSum ?? 0.0;
+      // double strengthAsPercent = differenceSum ?? 0.0;
+      double strengthAsPercent = double.tryParse(_myBox.get("DIFFERENCE_SUM_$yyyymmdd").toString()) ?? 0;
       print("strengthAsPercent -> $strengthAsPercent");
 
       // split the datatime up like below so it doesn't worry about hours/mins/secs etc.

@@ -91,7 +91,7 @@ class _HomePageState extends State<HomePage> {
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: [
+                children: [ 
                   _widgetDailyOutlays(db.dailySum),
                   CustomElevatedButton(getValue: "Google Ads", customFixedSize: Size(MediaQuery.of(context).size.width * 0.9, 60))
                 ],

@@ -113,7 +113,7 @@ class Money {
       String yyyymmdd = convertDateTimeToString(startDate.add(Duration(days: i)));
       var differenceSum = _myBox.get("DIFFERENCE_SUM_${yyyymmdd}");
 
-      if (differenceSum.isNotEmpty && differenceSum != 0.0) {
+      if (moneyList.isNotEmpty && differenceSum != 0.0) {
         final Map<DateTime, int> percentForEachDay = {DateTime.parse(yyyymmdd) : differenceSum};
 
         heatMapDataSet.addEntries(percentForEachDay.entries);
