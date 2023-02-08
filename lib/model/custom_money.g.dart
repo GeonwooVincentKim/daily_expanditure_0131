@@ -18,17 +18,18 @@ class CustomMoneyAdapter extends TypeAdapter<CustomMoney> {
     };
     return CustomMoney(
       fields[0] as String,
-      targetSum: fields[1] as int?,
+      targetSum: fields[1] as int,
       dailySum: fields[2] as int?,
       moneyList: (fields[3] as List?)?.cast<int>(),
       dayRate: fields[4] as double?,
+      dailyMoneyElement: fields[5] as int?,
     );
   }
 
   @override
   void write(BinaryWriter writer, CustomMoney obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.yearMonthDate)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class CustomMoneyAdapter extends TypeAdapter<CustomMoney> {
       ..writeByte(3)
       ..write(obj.moneyList)
       ..writeByte(4)
-      ..write(obj.dayRate);
+      ..write(obj.dayRate)
+      ..writeByte(5)
+      ..write(obj.dailyMoneyElement);
   }
 
   @override

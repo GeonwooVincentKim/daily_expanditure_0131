@@ -1,11 +1,16 @@
+import 'package:daily_expanditure_0131/model/custom_money.dart';
 import 'package:daily_expanditure_0131/shared/style.dart';
 import 'package:daily_expanditure_0131/widgets/custom/column_row/custom_row.dart';
 import 'package:daily_expanditure_0131/widgets/custom/custom_alert_dialog_box.dart';
 import 'package:daily_expanditure_0131/widgets/custom/custom_circle_avatar.dart';
 import 'package:daily_expanditure_0131/widgets/custom/custom_elevated_button.dart';
+import 'package:daily_expanditure_0131/widgets/custom/tile/custom_card.dart';
+import 'package:daily_expanditure_0131/widgets/custom/tile/custom_daily_expanditure_tile.dart';
 import 'package:daily_expanditure_0131/widgets/daily_expanditure_tile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,6 +20,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final box = Hive.openBox<CustomMoney>("money");
+
   List moneyList = []; // list of money that user spend for a day
   int targetSum = 0; // target sum of money that user planned to use for a day
   bool? hasSumValue; // Check sum value input first
@@ -27,6 +34,11 @@ class _HomePageState extends State<HomePage> {
   int dailySum = 0; // get the value of `targetSum - (sum = moneyList)`
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       backgroundColor: Colors.grey[300],
@@ -36,20 +48,56 @@ class _HomePageState extends State<HomePage> {
           
           // dummay variable to check the difference of targetSum and moneyList
           Text('$differenceSum', style: const TextStyle(color: CupertinoColors.black),),
-          
+
           Expanded(
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: moneyList.length,
-              itemBuilder: (context, index) {
-                return DailyExpanditureTile(
-                  elementName: int.parse(moneyList[index][0]),
-                  elementIncluded: moneyList[index][1],
-                  // settingsTapped: (context) => openExpandSettings(index),
-                  deleteTapped: (context) => deleteExpand(index),
+            child: ValueListenableBuilder(
+              valueListenable: Hive.box<CustomMoney>("money").listenable(),
+              builder: (context, Box<CustomMoney> box, child) {
+                // return ListView.builder(
+                //   shrinkWrap: true,
+                //   itemCount: moneyList.length,
+                //   itemBuilder: (context, index) {
+                //     final item = box.getAt(index);
+                //     print("Get Item => $item");
+
+                //     return item == null ?
+                //       Container(
+                //         child: const Text("Please Add the Data"),
+                //       ) : Text("${item.moneyList![index]}");
+                //       // ) : CustomDailyExpanditureTile(
+                //       //   // elementName: item.moneyList![index],
+                //       //   elementName: item.dailyMoneyElement,
+                //       //   // elementIncluded: moneyList[index][1],
+                //       //   // settingsTapped: (context) => openExpandSettings(index),
+                //       //   deleteTapped: (context) => deleteExpand(index),
+                //       // );
+                //   },
+                // );
+                print("Getting Item -> ${box.length}");
+                // CustomMoney money = box.get(_)
+                
+                return ListView.separated(
+                  itemBuilder: (_, index) {
+                    final item = box.getAt(index);
+
+                    return item == null ?
+                      Container(child: const Text("Please Add the Data")) :
+                      CustomCard(dailyMoney: item.dailyMoneyElement);
+                      // CustomDailyExpanditureTile(
+                      //   elementName: item.dailyMoneyElement,
+                      //   deleteTapped: (_) => deleteExpand(index),
+                      // );
+                  },
+                  separatorBuilder: (_, index) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 16.0),
+                      child: Divider(),
+                    );
+                  },
+                  itemCount: moneyList.length
                 );
               },
-            ),
+            )
           ),
           // Expanded(
             // child: Align(
@@ -189,6 +237,7 @@ class _HomePageState extends State<HomePage> {
       print("Difference (2 digit) -> ${double.parse((targetSum / innerSum).abs().toStringAsFixed(2))}");
     }
 
+    print("Custom Money Model -> $box");
 
     // If targetSum didn't input before input the value of innerSum,
     // return hasSumValue false

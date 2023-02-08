@@ -9,7 +9,7 @@ class CustomMoney {
   final String yearMonthDate;
 
   @HiveField(1)
-  int? targetSum;
+  final int targetSum;
 
   @HiveField(2)
   int? dailySum;
@@ -20,5 +20,8 @@ class CustomMoney {
   @HiveField(4)
   double? dayRate;
 
-  CustomMoney(this.yearMonthDate, {this.targetSum, this.dailySum, this.moneyList, this.dayRate});
+  @HiveField(5)
+  int? dailyMoneyElement;
+
+  CustomMoney(this.yearMonthDate, {required this.targetSum, this.dailySum, this.moneyList, this.dayRate, this.dailyMoneyElement});
 }
