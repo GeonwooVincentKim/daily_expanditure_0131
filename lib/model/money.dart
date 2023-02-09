@@ -91,14 +91,19 @@ class Money {
   }
 
   void calculateMoneyPercentages() {
-    if (moneyList.isNotEmpty && differenceSum != 0.0) {
-      print("differentSum -> $differenceSum");
+    int innerSum = 0;
+    for (int i = 0; i < moneyList.length; i++) {
+      innerSum += int.parse(moneyList[i][0]); // Store into the innerSum
+    }
 
-      String percent = moneyList.isEmpty
-        ? '0.0'
-        : (differenceSum / moneyList.length).toStringAsFixed(2);
-      
-      print("Get Sum~! -> $percent");
+    String percent = moneyList.isEmpty
+      ? '0.0'
+      : (differenceSum / moneyList.length).toStringAsFixed(2);
+    
+    print("differentSum -> $differenceSum");
+    print("Get Sum~! -> $percent");
+    
+    if (moneyList.isNotEmpty) {
       _myBox.put("NEW_DIFFERENCE_SUM_${todaysDateFormatted()}", percent);
     }
   }

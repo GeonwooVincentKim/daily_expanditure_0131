@@ -213,18 +213,29 @@ class _HomePageState extends State<HomePage> {
     
     // If dailySum is less smaller than targetSum, divide innerSum by targetSum
     // Otherwise, divide dailySum by targetSum.
-    if (db.dailySum <= db.targetSum) {
-      db.differenceSum = double.parse((innerSum / db.targetSum).abs().toStringAsFixed(2));
-      newDifferenceSum = db.differenceSum;
-      print("Get -> $newDifferenceSum");
-      // _myBox.put("NEW_DIFFERENCE_SUM_${todaysDateFormatted()}", newDifferenceSum);
-      _myBox.put("DIFFERENCE_SUM_${todaysDateFormatted()}", newDifferenceSum);
-    } else if (db.dailySum > db.targetSum) {
-      db.differenceSum = double.parse((db.targetSum / innerSum).abs().toStringAsFixed(2));
-      newDifferenceSum = db.differenceSum;
-      print("Get -> $newDifferenceSum");
-      // _myBox.put("NEW_DIFFERENCE_SUM_${todaysDateFormatted()}", newDifferenceSum);
-      _myBox.put("DIFFERENCE_SUM_${todaysDateFormatted()}", newDifferenceSum);
+    String percent = "";
+
+    if (db.moneyList.isEmpty) {
+      percent = "0.0";
+    } else {
+      if (db.dailySum <= db.targetSum) {
+        percent = (innerSum / db.targetSum).abs().toStringAsFixed(2);
+
+        // db.differenceSum = double.parse((innerSum / db.targetSum).abs().toStringAsFixed(2));
+        // newDifferenceSum = db.differenceSum;
+        // print("Get -> $newDifferenceSum");
+        // _myBox.put("NEW_DIFFERENCE_SUM_${todaysDateFormatted()}", newDifferenceSum);
+        // _myBox.put("DIFFERENCE_SUM_${todaysDateFormatted()}", newDifferenceSum);
+      
+        _myBox.put("DIFFERENCE_SUM_${todaysDateFormatted()}", percent);
+      } else if (db.dailySum > db.targetSum) {
+        percent = (db.targetSum / innerSum).abs().toStringAsFixed(2);
+        // db.differenceSum = double.parse((db.targetSum / innerSum).abs().toStringAsFixed(2));
+        // newDifferenceSum = db.differenceSum;
+        // print("Get -> $newDifferenceSum");
+        // _myBox.put("NEW_DIFFERENCE_SUM_${todaysDateFormatted()}", newDifferenceSum);
+        _myBox.put("DIFFERENCE_SUM_${todaysDateFormatted()}", percent);
+      }
     }
 
     print('Get SUM -> ${db.differenceSum}');
