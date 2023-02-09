@@ -1,3 +1,4 @@
+import 'package:daily_expanditure_0131/model/custom_daily_money.dart';
 import 'package:daily_expanditure_0131/model/custom_money.dart';
 import 'package:daily_expanditure_0131/shared/date_util.dart';
 import 'package:daily_expanditure_0131/shared/style.dart';
@@ -63,8 +64,10 @@ class _HomePageState extends State<HomePage> {
 
           Expanded(
             child: ValueListenableBuilder(
-              valueListenable: Hive.box<CustomMoney>("money").listenable(),
-              builder: (context, Box<CustomMoney> box, child) {
+              // valueListenable: Hive.box<CustomMoney>("money").listenable(),
+              // builder: (context, Box<CustomMoney> box, child) {
+              valueListenable: Hive.box<CustomDailyMoney>("daily_money").listenable(),
+              builder: (context, Box<CustomDailyMoney> box, child) {
                 // return ListView.builder(
                 //   shrinkWrap: true,
                 //   itemCount: moneyList.length,
@@ -92,9 +95,14 @@ class _HomePageState extends State<HomePage> {
                   itemBuilder: (_, index) {
                     final item = box.getAt(index);
 
-                    return item == null ?
-                      Container(child: const Text("Please Add the Data")) :
-                      CustomCard(dailyMoney: item.dailyMoneyElement);
+                    if (item == null) {
+                      return Container(child: const Text("Please Add the Data"));
+                    } else {
+                      return CustomCard(dailyMoney: item.elementSize);
+                    }
+                    // return item == null ?
+                    //   Container(child: const Text("Please Add the Data")) :
+                    //   CustomCard(dailyMoney: item.elementSize);
                       // CustomDailyExpanditureTile(
                       //   elementName: item.dailyMoneyElement,
                       //   deleteTapped: (_) => deleteExpand(index),

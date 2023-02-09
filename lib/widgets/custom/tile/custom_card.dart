@@ -6,7 +6,7 @@ class CustomCard extends StatelessWidget {
   // final String engWord;
   // final String korWord;
   // final int correctCount;
-  final int? dailyMoney;
+  final int dailyMoney;
 
   CustomCard({
     // required this.onBodyTap,
