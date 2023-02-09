@@ -35,7 +35,7 @@ class Money {
 
     _myBox.put("START_DATE", _workDate);
     _myBox.put("TARGET_SUM", targetSum);
-    _myBox.put("DIFFERENCE_SUM_${_workDate}", differenceSum);
+    // _myBox.put("DIFFERENCE_SUM_${_workDate}", differenceSum);
     _myBox.put("DAILY_SUM", dailySum);
     // _myBox.put("HEAT_MAP_DATASET", heatMapDataSet);
   }
@@ -58,7 +58,7 @@ class Money {
       moneyList = _myBox.get("CURRENT_MONEY_LIST");
       // moneyList = _myBox.get(todaysDateFormatted());
       targetSum = _myBox.get("TARGET_SUM");
-      differenceSum = _myBox.get("DIFFERENCE_SUM_${todaysDateFormatted()}");
+      // differenceSum = _myBox.get("DIFFERENCE_SUM_${todaysDateFormatted()}");
       dailySum = _myBox.get("DAILY_SUM");
       // heatMapDataSet = _myBox.get(todaysDateFormatted());
     }
@@ -78,16 +78,20 @@ class Money {
     // update universal money list in case it changed (new habit, edit habit, delete habit)
     _myBox.put("CURRENT_MONEY_LIST", moneyList);
     _myBox.put("TARGET_SUM", targetSum);
-    _myBox.put("DIFFERENCE_SUM_${todaysDateFormatted()}", differenceSum);
+    // _myBox.put("DIFFERENCE_SUM_${todaysDateFormatted()}", differenceSum);
     _myBox.put("DAILY_SUM", dailySum);
 
-    heatMapDataSet[DateTime.parse(todaysDateFormatted())] = differenceSum.toInt();
+    // heatMapDataSet[DateTime.parse(todaysDateFormatted())] = differenceSum.toInt();
     
 
     // calculate money list in case it change (new money element, edit money element, delete money element)
-    // calculateMoneyPercentages();
+    calculateMoneyPercentages();
 
     loadHeatMap(differenceSum);
+  }
+
+  void newCalculateMoneyPercentages() {
+    
   }
 
   void calculateMoneyPercentages() {
@@ -118,6 +122,7 @@ class Money {
     for (int i = 0; i <= daysInBetweeen; i++) {
       String yyyymmdd = convertDateTimeToString(startDate.add(Duration(days: i)));
       // double strengthAsPercent = differenceSum ?? 0.0;
+      // double strengthAsPercent = double.parse(_myBox.get("DIFFERENCE_SUM_$yyyymmdd")?? "0.0");
       double strengthAsPercent = double.tryParse(_myBox.get("DIFFERENCE_SUM_$yyyymmdd").toString()) ?? 0;
       print("strengthAsPercent -> $strengthAsPercent");
 
