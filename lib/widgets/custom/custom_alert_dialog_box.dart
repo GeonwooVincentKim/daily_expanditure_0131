@@ -28,7 +28,7 @@ class CustomAlertDialogBox extends StatelessWidget {
           controller: controller,
           style: const TextStyle(color: CupertinoColors.black),
           placeholder: hintText,
-          // onSubmitted: (_) => submit(context),
+          onSubmitted: (_) => submit(context),
         ),
         actions: [
           // hasSumValue ? (
