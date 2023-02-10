@@ -1,4 +1,3 @@
-import 'package:daily_expanditure_0131/shared/date_time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_heatmap_calendar/flutter_heatmap_calendar.dart';
 
@@ -15,7 +14,7 @@ class HeatmapSummary extends StatelessWidget {
       padding: const EdgeInsets.only(top: 25, bottom: 25),
       child: HeatMap(
         // startDate: createDateTimeObject(startDate),
-        startDate: DateTime(nowDate.year, nowDate.month, 1),
+        startDate: DateTime(DateTime.now().year, DateTime.now().month, 1),
         endDate: DateTime.now().add(Duration(days: 40)),
         // endDate: DateTime(nowDate.year, nowDate.month + 1, 0),
         datasets: datasets,
@@ -38,9 +37,6 @@ class HeatmapSummary extends StatelessWidget {
           9: Color.fromARGB(220, 2, 179, 8),
           10: Color.fromARGB(255, 2, 179, 8),
         },
-        // onClick: (p0) {
-          
-        // },
       )
     );
   }
