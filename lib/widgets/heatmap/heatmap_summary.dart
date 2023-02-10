@@ -15,7 +15,7 @@ class HeatmapSummary extends StatelessWidget {
       padding: const EdgeInsets.only(top: 25, bottom: 25),
       child: HeatMap(
         // startDate: createDateTimeObject(startDate),
-        startDate: DateTime(nowDate.year, nowDate.month, 1),
+        startDate: DateTime(DateTime.now().year, DateTime.now().month, 1),
         endDate: DateTime.now().add(Duration(days: 40)),
         // endDate: DateTime(nowDate.year, nowDate.month + 1, 0),
         datasets: datasets,
