@@ -6,10 +6,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   await Hive.initFlutter();
-  // Hive.registerAdapter(CustomMoneyAdapter());
-  Hive.registerAdapter(CustomDailyMoneyAdapter());
-  await Hive.openBox<CustomMoney>('money'); // It could be not work
-  await Hive.openBox<CustomDailyMoney>("daily_money");
+  await Hive.openBox("money_db");
 
   runApp(const MyApp());
 }

@@ -7,7 +7,6 @@ class CustomElevatedButton extends StatelessWidget {
 
   const CustomElevatedButton({super.key, required this.getValue, required this.customFixedSize});
 
-
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(

@@ -1,6 +1,5 @@
-import 'package:daily_expanditure_0131/model/custom_daily_money.dart';
-import 'package:daily_expanditure_0131/model/custom_money.dart';
-import 'package:daily_expanditure_0131/shared/date_util.dart';
+import 'package:daily_expanditure_0131/model/money.dart';
+import 'package:daily_expanditure_0131/shared/date_time.dart';
 import 'package:daily_expanditure_0131/shared/style.dart';
 import 'package:daily_expanditure_0131/widgets/custom/column_row/custom_row.dart';
 import 'package:daily_expanditure_0131/widgets/custom/custom_alert_dialog_box.dart';
@@ -9,11 +8,10 @@ import 'package:daily_expanditure_0131/widgets/custom/custom_elevated_button.dar
 import 'package:daily_expanditure_0131/widgets/custom/tile/custom_card.dart';
 import 'package:daily_expanditure_0131/widgets/custom/tile/custom_daily_expanditure_tile.dart';
 import 'package:daily_expanditure_0131/widgets/daily_expanditure_tile.dart';
+import 'package:daily_expanditure_0131/widgets/heatmap/heatmap_summary.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:hive_flutter/adapters.dart';
-import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -23,25 +21,35 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final box = Hive.openBox<CustomMoney>("money");
-  late String _workYmd;
-  late DateTime _startDate;
-  late DateTime _endDate;
+  Money db = Money();
+  final _myBox = Hive.box("money_db");
 
-  Map<DateTime, int> heatMapDatasets = {};
-  DateTime now = DateTime.now();
+  double newDifferenceSum = 0.0;
 
-  List moneyList = []; // list of money that user spend for a day
-  int targetSum = 0; // target sum of money that user planned to use for a day
+  @override
+  void initState() {
+    // if there is no current money list, then it is the 1st time ever opening the app
+    // then create default data
+    if ((_myBox.get("CURRENT_MONEY_LIST") == null) || (_myBox.get("TARGET_SUM") == null)) {
+      db.createDefaultData();
+    } else {
+      // already exists data
+      db.loadData();
+    }
+
+    // update db
+    db.updateDatabase();
+
+    super.initState();
+  }
+
   bool? hasSumValue; // Check sum value input first
 
   final _newMoneyElementController = TextEditingController();
   final _newTargetAmountController = TextEditingController();
 
   int innerSum = 0; // Calculate the sum of all elements of List (Expanditure)
-  double differenceSum = 0.0; // get the value of `targetSum // (sum = moneyList)`
-  int dailySum = 0; // get the value of `targetSum - (sum = moneyList)`
-
+  
   @override
   void initState() {
     _workYmd = getToday();
@@ -57,64 +65,21 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.grey[300],
       child: Column(
         children: [
-          _widgetTargetAmount(targetSum, true), // allows to set true input value anytime user wants
+          _widgetTargetAmount(db.targetSum, true), // allows to set true input value anytime user wants
           
-          // dummay variable to check the difference of targetSum and moneyList
-          Text('$differenceSum', style: const TextStyle(color: CupertinoColors.black),),
+          // HeatmapSummary(datasets: db.heatMapDataSet, startDate: _myBox.get("START_DATE")),
+          HeatmapSummary(datasets: db.heatMapDataSet),
 
           Expanded(
-            child: ValueListenableBuilder(
-              // valueListenable: Hive.box<CustomMoney>("money").listenable(),
-              // builder: (context, Box<CustomMoney> box, child) {
-              valueListenable: Hive.box<CustomDailyMoney>("daily_money").listenable(),
-              builder: (context, Box<CustomDailyMoney> box, child) {
-                // return ListView.builder(
-                //   shrinkWrap: true,
-                //   itemCount: moneyList.length,
-                //   itemBuilder: (context, index) {
-                //     final item = box.getAt(index);
-                //     print("Get Item => $item");
-
-                //     return item == null ?
-                //       Container(
-                //         child: const Text("Please Add the Data"),
-                //       ) : Text("${item.moneyList![index]}");
-                //       // ) : CustomDailyExpanditureTile(
-                //       //   // elementName: item.moneyList![index],
-                //       //   elementName: item.dailyMoneyElement,
-                //       //   // elementIncluded: moneyList[index][1],
-                //       //   // settingsTapped: (context) => openExpandSettings(index),
-                //       //   deleteTapped: (context) => deleteExpand(index),
-                //       // );
-                //   },
-                // );
-                print("Getting Item -> ${box.length}");
-                // CustomMoney money = box.get(_)
-                
-                return ListView.separated(
-                  itemBuilder: (_, index) {
-                    final item = box.getAt(index);
-
-                    if (item == null) {
-                      return Container(child: const Text("Please Add the Data"));
-                    } else {
-                      return CustomCard(dailyMoney: item.elementSize);
-                    }
-                    // return item == null ?
-                    //   Container(child: const Text("Please Add the Data")) :
-                    //   CustomCard(dailyMoney: item.elementSize);
-                      // CustomDailyExpanditureTile(
-                      //   elementName: item.dailyMoneyElement,
-                      //   deleteTapped: (_) => deleteExpand(index),
-                      // );
-                  },
-                  separatorBuilder: (_, index) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16.0),
-                      child: Divider(),
-                    );
-                  },
-                  itemCount: moneyList.length
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: db.moneyList.length,
+              itemBuilder: (context, index) {
+                return DailyExpanditureTile(
+                  elementName: int.parse(db.moneyList[index][0]),
+                  elementIncluded: db.moneyList[index][1],
+                  // settingsTapped: (context) => openExpandSettings(index),
+                  deleteTapped: (context) => deleteExpand(index),
                 );
               },
             )
@@ -126,7 +91,7 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  _widgetDailyOutlays(dailySum),
+                  _widgetDailyOutlays(db.dailySum),
                   CustomElevatedButton(getValue: "Google Ads", customFixedSize: Size(MediaQuery.of(context).size.width * 0.9, 60))
                 ],
               ),
@@ -192,7 +157,7 @@ class _HomePageState extends State<HomePage> {
           controller: textController,
           hintText: "입력하세요",
           // hasSumValue: (targetSum <= 0) ? false : true,
-          hasSumValue: (textController == _newMoneyElementController && targetSum <= 0) ? false : true,
+          hasSumValue: (textController == _newMoneyElementController && db.targetSum <= 0) ? false : true,
           onSave: onSave,
           onCancel: onCancel,
         );
@@ -203,19 +168,22 @@ class _HomePageState extends State<HomePage> {
   // List of expanditure of today (Create - List)
   void saveNewExpand() {
     setState(() {
-      moneyList.add([_newMoneyElementController.text, false]);
-      // print(moneyList.runtimeType);
+      db.moneyList.add([_newMoneyElementController.text, false]);
+      // print(db.moneyList.runtimeType);
 
-      print("length -> ${moneyList.length}");
+      print("length -> ${db.moneyList.length}");
       
       // Calculate the sum
       saveDifference(innerSum, '+');
     });
 
+    print("sumValue ? -> $hasSumValue");
     if (hasSumValue == true) {
       _newMoneyElementController.clear();
     }
     Navigator.of(context).pop();
+
+    db.updateDatabase();
   }
 
   // Save the difference of TargetSum and moneyList
@@ -223,38 +191,59 @@ class _HomePageState extends State<HomePage> {
     // Not to set as String
     // This may cause type case error
     // Make sure parse the String value to Integer.
-    for (int i = 0; i < moneyList.length; i++) {
-      // print(moneyList[i][0].runtimeType); // Get current value's type
-      print("Values -> ${int.parse(moneyList[i][0])}");
-      // print("Plus -> ${int.parse(moneyList[i][0]) + int.parse(moneyList[i][0])}");
+    print("Exist ?? -> ${db.moneyList}");
+
+    for (int i = 0; i < db.moneyList.length; i++) {
+      // print(db.moneyList[i][0].runtimeType); // Get current value's type
+      print("Values -> ${int.parse(db.moneyList[i][0])}");
+      // print("Plus -> ${int.parse(db.moneyList[i][0]) + int.parse(db.moneyList[i][0])}");
     
       if (sign == '+') {
-        innerSum += int.parse(moneyList[i][0]); // Store into the innerSum
+        innerSum += int.parse(db.moneyList[i][0]); // Store into the innerSum
       } else if (sign == '-') {
-        innerSum -= int.parse(moneyList[i][0]); // Store into the innerSum
+        innerSum -= int.parse(db.moneyList[i][0]); // Store into the innerSum
       }
     }    
     
     // Get DailySum from innerSum
-    dailySum = innerSum.abs();
+    db.dailySum = innerSum.abs();
     
     // If dailySum is less smaller than targetSum, divide innerSum by targetSum
     // Otherwise, divide dailySum by targetSum.
-    if (dailySum <= targetSum) {
-      differenceSum = double.parse((innerSum / targetSum).abs().toStringAsFixed(2));
-    } else if (dailySum > targetSum) {
-      differenceSum = double.parse((targetSum / innerSum).abs().toStringAsFixed(2));
+    String percent = "";
+
+    if (db.moneyList.isEmpty) {
+      percent = "0.0";
+    } else {
+      if (db.dailySum <= db.targetSum) {
+        percent = (innerSum / db.targetSum).abs().toStringAsFixed(2);
+
+        // db.differenceSum = double.parse((innerSum / db.targetSum).abs().toStringAsFixed(2));
+        // newDifferenceSum = db.differenceSum;
+        // print("Get -> $newDifferenceSum");
+        // _myBox.put("NEW_DIFFERENCE_SUM_${todaysDateFormatted()}", newDifferenceSum);
+        // _myBox.put("DIFFERENCE_SUM_${todaysDateFormatted()}", newDifferenceSum);
+      
+        _myBox.put("DIFFERENCE_SUM_${todaysDateFormatted()}", percent);
+      } else if (db.dailySum > db.targetSum) {
+        percent = (db.targetSum / innerSum).abs().toStringAsFixed(2);
+        // db.differenceSum = double.parse((db.targetSum / innerSum).abs().toStringAsFixed(2));
+        // newDifferenceSum = db.differenceSum;
+        // print("Get -> $newDifferenceSum");
+        // _myBox.put("NEW_DIFFERENCE_SUM_${todaysDateFormatted()}", newDifferenceSum);
+        _myBox.put("DIFFERENCE_SUM_${todaysDateFormatted()}", percent);
+      }
     }
 
-    print('Get SUM -> $differenceSum');
+    print('Get SUM -> ${db.differenceSum}');
     print('Get Daily Sum -> ${innerSum.abs()}');
     
-    if (innerSum.abs() < targetSum) {
-      print("Difference -> ${(innerSum / targetSum).abs()}");
-      print("Difference (2 digit) -> ${double.parse((innerSum / targetSum).abs().toStringAsFixed(2))}");
-    } else if (innerSum.abs() > targetSum) {
-      print("Difference -> ${(targetSum / innerSum).abs()}");
-      print("Difference (2 digit) -> ${double.parse((targetSum / innerSum).abs().toStringAsFixed(2))}");
+    if (innerSum.abs() < db.targetSum) {
+      print("Difference -> ${(innerSum / db.targetSum).abs()}");
+      print("Difference (2 digit) -> ${double.parse((innerSum / db.targetSum).abs().toStringAsFixed(2))}");
+    } else if (innerSum.abs() > db.targetSum) {
+      print("Difference -> ${(db.targetSum / innerSum).abs()}");
+      print("Difference (2 digit) -> ${double.parse((db.targetSum / innerSum).abs().toStringAsFixed(2))}");
     }
 
     print("Custom Money Model -> $box");
@@ -262,18 +251,72 @@ class _HomePageState extends State<HomePage> {
     // If targetSum didn't input before input the value of innerSum,
     // return hasSumValue false
     // Otherwise return true
-    if (targetSum == 0) {
+    if (db.targetSum == 0) {
       hasSumValue = false;
     } else {
       hasSumValue = true;
     }
+
+    // DateTime startDate = createDateTimeObject(_myBox.get("START_DATE"));
+    // print(startDate);
+    // // count the number of days to load
+    // int daysInBetweeen = DateTime.now().difference(startDate).inDays;
+
+    // // go from start date to today and add each percentage to the dataset
+    // // "PERCENTAGE_SUMMARY_yyyymmdd" will be the key in the database
+    // for (int i = 0; i < daysInBetweeen + 1; i++) {
+    //   String yyyymmdd = convertDateTimeToString(startDate.add(Duration(days: 1)));
+    //   // double strengthAsPercent = double.parse(_myBox.get("PERCENTAGE_SUMMARY_$yyyymmdd") ?? "0.0");
+    //   double strengthAsPercent = db.differenceSum * 10;
+    //   // double strengthAsPercent = double.parse(_myBox.get("NEW_DIFFERENCE_SUM_$yyyymmdd") ?? "0.0");
+    //   print("strengthAsPercent -> $strengthAsPercent");
+
+
+    //   // newDifferenceSum = double.parse(_myBox.get("NEW_DIFFERENCE_SUM_$yyyymmdd") ?? "0.0");
+    //   // print("strengthAsPercent -> $newDifferenceSum");
+
+    //   // split the datatime up like below so it doesn't worry about hours/mins/secs etc.
+
+    //   // year
+    //   int year = startDate.add(Duration(days: i)).year;
+
+    //   // month
+    //   int month = startDate.add(Duration(days: i)).month;
+
+    //   // day
+    //   int day = startDate.add(Duration(days: i)).day;
+
+    //   // int rate = (db.differenceSum * 100).toInt();
+    //   // rate = rate > 100 ? 100 : rate;
+    //   // print("rate -> $rate");
+
+    //   int rate = (strengthAsPercent).toInt();
+    //   rate = rate > 10 ? 10 : rate;
+    //   print("rate -> $rate");
+
+    //   // db.heatMapDataSet[DateTime(year, month, day)] = rate;
+    //   final percentForEachDay = <DateTime, int> {
+    //     DateTime(year, month, day) : (rate).toInt()
+    //   };
+    //   // Controll the opacity of color
+    //   // final percentForEachDay = <DateTime, int> {
+    //   //   DateTime(year, month, day) : (strengthAsPercent).toInt()
+    //   // };
+
+    //   print("HeatMap Set -> ${DateTime.parse(yyyymmdd)}");
+    //   // print("strengAsPercent ~! -> $percentForEachDay");
+    //   // db.heatMapDataSet = newDifferenceSum.toString as Map<DateTime, int>;
+    //   db.heatMapDataSet.addEntries(percentForEachDay.entries);
+    //   print(db.heatMapDataSet);
+    // }
   }
 
   // Save the target amount of today (Create - Object)
   void saveTargetAmount() {
     setState(() {
-      targetSum = int.parse(_newTargetAmountController.text);
+      db.targetSum = int.parse(_newTargetAmountController.text);
     });
+    db.updateDatabase();
 
     _newTargetAmountController.clear();
     Navigator.of(context).pop();
@@ -282,11 +325,12 @@ class _HomePageState extends State<HomePage> {
   // Delete from the list (Delete)
   void deleteExpand(int index) {
     setState(() {
-      moneyList.removeAt(index);
+      db.moneyList.removeAt(index);
 
       // Calculate the sum
       saveDifference(innerSum, '-');
     });
+    db.updateDatabase();
   }
 
   // Close the Dialog Box
@@ -295,4 +339,3 @@ class _HomePageState extends State<HomePage> {
     Navigator.of(context).pop();
   }
 }
-
