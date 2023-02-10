@@ -5,6 +5,8 @@ import 'package:daily_expanditure_0131/widgets/custom/column_row/custom_row.dart
 import 'package:daily_expanditure_0131/widgets/custom/custom_alert_dialog_box.dart';
 import 'package:daily_expanditure_0131/widgets/custom/custom_circle_avatar.dart';
 import 'package:daily_expanditure_0131/widgets/custom/custom_elevated_button.dart';
+import 'package:daily_expanditure_0131/widgets/custom/tile/custom_card.dart';
+import 'package:daily_expanditure_0131/widgets/custom/tile/custom_daily_expanditure_tile.dart';
 import 'package:daily_expanditure_0131/widgets/daily_expanditure_tile.dart';
 import 'package:daily_expanditure_0131/widgets/heatmap/heatmap_summary.dart';
 import 'package:flutter/cupertino.dart';
@@ -49,6 +51,15 @@ class _HomePageState extends State<HomePage> {
   int innerSum = 0; // Calculate the sum of all elements of List (Expanditure)
   
   @override
+  void initState() {
+    _workYmd = getToday();
+    _startDate = DateTime.parse(DateFormat('yyyyMMdd').format(DateTime(now.year, now.month, 1)));
+    _endDate = DateTime.parse(DateFormat('yyyyMMdd').format(DateTime(now.year, now.month + 1, 0)));
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       backgroundColor: Colors.grey[300],
@@ -71,7 +82,7 @@ class _HomePageState extends State<HomePage> {
                   deleteTapped: (context) => deleteExpand(index),
                 );
               },
-            ),
+            )
           ),
           // Expanded(
             // child: Align(
@@ -235,6 +246,7 @@ class _HomePageState extends State<HomePage> {
       print("Difference (2 digit) -> ${double.parse((db.targetSum / innerSum).abs().toStringAsFixed(2))}");
     }
 
+    print("Custom Money Model -> $box");
 
     // If targetSum didn't input before input the value of innerSum,
     // return hasSumValue false
