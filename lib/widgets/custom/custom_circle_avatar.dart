@@ -1,5 +1,3 @@
-import 'package:daily_expanditure_0131/shared/style.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomCircleAvatar extends StatelessWidget {
