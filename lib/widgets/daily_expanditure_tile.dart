@@ -3,12 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class DailyExpanditureTile extends StatelessWidget {
-  final String moneyName;
+  final int elementName;
+  final bool elementIncluded;
+  // final Function(BuildContext)? settingsTapped;
   final Function(BuildContext)? deleteTapped;
 
   const DailyExpanditureTile({
     super.key, 
-    required this.moneyName, 
+    required this.elementName, 
+    required this.elementIncluded,
+    // required this.settingsTapped, 
     required this.deleteTapped
   });
 
@@ -39,7 +43,7 @@ class DailyExpanditureTile extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               // element of list 'daily money'
-              Text(moneyName),
+              Text('$elementName'),
               const SizedBox(width: 50),
               ElevatedButton(
                 onPressed: () => false,
