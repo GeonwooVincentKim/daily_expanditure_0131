@@ -30,14 +30,9 @@ class Money {
   Map<DateTime, int> heatMapDataSet = {};
 
   // create initial default data
-  void createDefaultData(String _workDate) {
+  void createDefaultData() {
     moneyList = [];
-
-    _myBox.put("START_DATE", _workDate);
-    _myBox.put("TARGET_SUM", targetSum);
-    _myBox.put("DIFFERENCE_SUM_${_workDate}", differenceSum);
-    _myBox.put("DAILY_SUM", dailySum);
-    // _myBox.put("HEAT_MAP_DATASET", heatMapDataSet);
+    _myBox.put("START_DATE", todaysDateFormatted());
   }
 
   // load data if is already exists
@@ -80,9 +75,6 @@ class Money {
     _myBox.put("TARGET_SUM", targetSum);
     _myBox.put("DIFFERENCE_SUM_${todaysDateFormatted()}", differenceSum);
     _myBox.put("DAILY_SUM", dailySum);
-
-    heatMapDataSet[DateTime.parse(todaysDateFormatted())] = differenceSum.toInt();
-    
 
     // calculate money list in case it change (new money element, edit money element, delete money element)
     // calculateMoneyPercentages();

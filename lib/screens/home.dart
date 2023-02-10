@@ -1,6 +1,5 @@
 import 'package:daily_expanditure_0131/model/money.dart';
 import 'package:daily_expanditure_0131/shared/date_time.dart';
-import 'package:daily_expanditure_0131/shared/date_util.dart';
 import 'package:daily_expanditure_0131/shared/style.dart';
 import 'package:daily_expanditure_0131/widgets/custom/column_row/custom_row.dart';
 import 'package:daily_expanditure_0131/widgets/custom/custom_alert_dialog_box.dart';
@@ -11,7 +10,6 @@ import 'package:daily_expanditure_0131/widgets/heatmap/heatmap_summary.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,10 +20,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Money db = Money();
-  Box<dynamic> _myBox = Hive.box("money_db");
-  late String _workDate;
-  late DateTime _startDate;
-  late DateTime _endDate;
+  final _myBox = Hive.box("money_db");
 
   double newDifferenceSum = 0.0;
 
@@ -33,19 +28,12 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     // if there is no current money list, then it is the 1st time ever opening the app
     // then create default data
-    _workDate = getToday();
-    // _workDate = todaysDateFormatted();
-    // _workDate = DateFormat('yyyyMMdd').format(_startDate);
-    // _startDate = DateTime.parse('yyyymmdd');
-
     if ((_myBox.get("CURRENT_MONEY_LIST") == null) || (_myBox.get("TARGET_SUM") == null)) {
-      db.createDefaultData(_workDate);
+      db.createDefaultData();
     } else {
       // already exists data
       db.loadData();
     }
-
-    // db.loadHeatMap();
 
     // update db
     db.updateDatabase();
@@ -68,8 +56,6 @@ class _HomePageState extends State<HomePage> {
         children: [
           _widgetTargetAmount(db.targetSum, true), // allows to set true input value anytime user wants
           
-          // dummay variable to check the difference of targetSum and moneyList
-          Text('${db.differenceSum}', style: const TextStyle(color: CupertinoColors.black),),
           // HeatmapSummary(datasets: db.heatMapDataSet, startDate: _myBox.get("START_DATE")),
           HeatmapSummary(datasets: db.heatMapDataSet),
 
@@ -93,7 +79,7 @@ class _HomePageState extends State<HomePage> {
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: [ 
+                children: [
                   _widgetDailyOutlays(db.dailySum),
                   CustomElevatedButton(getValue: "Google Ads", customFixedSize: Size(MediaQuery.of(context).size.width * 0.9, 60))
                 ],
