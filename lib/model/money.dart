@@ -28,9 +28,8 @@ class Money {
   Map<DateTime, int> heatMapDataSet = {};
 
   // create initial default data
-  void createDefaultData() {
+  void createDefaultData(String _workDate) {
     moneyList = [];
-
     _myBox.put("START_DATE", todaysDateFormatted());
   }
 
@@ -57,6 +56,9 @@ class Money {
     _myBox.put("CURRENT_MONEY_LIST", moneyList);
     _myBox.put("DAILY_SUM", dailySum);
     _myBox.put("TARGET_SUM", targetSum);
+
+    heatMapDataSet[DateTime.parse(todaysDateFormatted())] = differenceSum.toInt();
+    
 
     // calculate money list in case it change (new money element, edit money element, delete money element)
     calculateMoneyPercentages();
@@ -93,6 +95,9 @@ class Money {
 
     // go from start date to today and add each percentage to the dataset
     // "PERCENTAGE_SUMMARY_yyyymmdd" will be the key in the database
+    
+    // 시작일부터 시작하여 today 까지 각 percentage 를 dataset 에 추가한다.
+    // "PERCENTAGE_SUMMARY_yyyymmdd" 는 DB 의 key 값이 될 것이다.
     for (int i = 0; i < daysInBetweeen + 1; i++) {
       String yyyymmdd = convertDateTimeToString(startDate.add(Duration(days: i)));
       double strengthAsPercent = double.parse(_myBox.get("DIFFERENCES_SUM_$yyyymmdd") ?? "0.0");
