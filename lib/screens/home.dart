@@ -157,8 +157,6 @@ class _HomePageState extends State<HomePage> {
   void saveNewExpand() {
     setState(() {
       db.moneyList.add([_newMoneyElementController.text, false]);
-      // print(db.moneyList.runtimeType);
-
       saveDifference(innerSum, '+');
       _myBox.put("INNER_SUM", innerSum);
     });
