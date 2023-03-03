@@ -50,7 +50,6 @@ class Money {
   void updateDatabase() {
     // update todays entry
     _myBox.put(todaysDateFormatted(), moneyList);
-    print(heatMapDataSet);
 
     // update universal money list in case it changed (new habit, edit habit, delete habit)
     _myBox.put("CURRENT_MONEY_LIST", moneyList);
