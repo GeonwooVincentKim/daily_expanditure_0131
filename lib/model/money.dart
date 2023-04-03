@@ -72,6 +72,7 @@ class Money {
 
     if (moneyList.isEmpty) {
       percent = '0.0';
+      _myBox.put("DIFFERENCES_SUM_${todaysDateFormatted()}", percent);
     } else {
       if (dailySum <= targetSum) {
         percent = (dailySum / targetSum).toStringAsFixed(2);
@@ -113,6 +114,7 @@ class Money {
       int day = startDate.add(Duration(days: i)).day;
         
       final Map<DateTime, int> percentForEachDay = {DateTime(year, month, day) : (10 * strengthAsPercent).toInt()};
+      // final Map<DateTime, int> percentForEachDay = {DateTime(year, month, day) : 0};
       
       print("percent For Each day -> $percentForEachDay");
       print("HeatMap Set -> ${DateTime.parse(yyyymmdd)}");
