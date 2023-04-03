@@ -15,7 +15,7 @@ class DailyExpanditureTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(15.0),
       child: Slidable(
         endActionPane: ActionPane(
           motion: StretchMotion(),
@@ -30,7 +30,7 @@ class DailyExpanditureTile extends StatelessWidget {
           ],
         ),
         child: Container(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(
             color: CupertinoColors.systemGrey6,
             borderRadius: BorderRadius.circular(12),

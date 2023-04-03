@@ -11,7 +11,7 @@ class HeatmapSummary extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 25, bottom: 25),
+      padding: const EdgeInsets.only(top: 20, bottom: 20),
       child: HeatMap(
         // startDate: createDateTimeObject(startDate),
         startDate: DateTime(DateTime.now().year, DateTime.now().month, 1),
@@ -24,7 +24,7 @@ class HeatmapSummary extends StatelessWidget {
         showColorTip: false,
         showText: true,
         scrollable: true,
-        size: 30,
+        size: 28,
         colorsets: const {
           1: Color.fromARGB(20, 2, 179, 8),
           2: Color.fromARGB(40, 2, 179, 8),

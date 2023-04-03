@@ -54,6 +54,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.grey[300],
       child: Column(
         children: [
+          SizedBox(height: MediaQuery.of(context).size.height * 0.1),
           _widgetTargetAmount(db.targetSum, true), // allows to set true input value anytime user wants
           
           // HeatmapSummary(datasets: db.heatMapDataSet, startDate: _myBox.get("START_DATE")),
