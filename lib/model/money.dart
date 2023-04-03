@@ -70,6 +70,7 @@ class Money {
 
     if (moneyList.isEmpty) {
       percent = '0.0';
+      _myBox.put("DIFFERENCES_SUM_${todaysDateFormatted()}", percent);
     } else {
       if (dailySum <= targetSum) {
         percent = (dailySum / targetSum).toStringAsFixed(2);
